@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Conference {
@@ -30,6 +31,20 @@ public class Conference {
         break;
       }
     }
+  }
+
+  void printStandings() {
+    updateStandings();
+
+    System.out.println(name + " Conference standings:");
+    for (int i = 0; i < teams.size(); i++) {
+      System.out.println((i + 1) + ": " + teams.get(i).nameAndRecord());
+    }
+    System.out.println();
+  }
+
+  void updateStandings() {
+    Collections.sort(teams, new StandingsComparator());
   }
 
   List<Team> getTeams() { return teams; }

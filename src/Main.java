@@ -79,6 +79,9 @@ public class Main {
             List.of(atlantic, central, southeast));
 
     League NBA = new League("National Basketball Association", 2019,
-            western, eastern);
+            western, eastern, 82);
+    NBA.simulateGameDays(82);
+    western.printStandings();
+    eastern.printStandings();
   }
 }

@@ -43,11 +43,6 @@ public class Scheduler {
         schedule[6 + i] = new Game(divisions.get(i).get(1),
                 divisions.get(getDiv(macro, i)).get(3));
         done++;
-        if (i < 3) {
-          schedule[12 + i] = new Game(divisions.get(i).get(2),
-                  divisions.get(getDiv((macro + 1) % 5, i)).get(2));
-          done++;
-        }
       } else if (micro == 1) {
         schedule[i] = new Game(divisions.get(i).get(0),
                 divisions.get(getDiv(macro, i)).get(3));
@@ -55,11 +50,6 @@ public class Scheduler {
         schedule[6 + i] = new Game(divisions.get(i).get(2),
                 divisions.get(getDiv(macro, i)).get(4));
         done++;
-        if (i < 3) {
-          schedule[12 + i] = new Game(divisions.get(i).get(1),
-                  divisions.get(getDiv((macro + 1) % 5, i)).get(1));
-          done++;
-        }
       } else if (micro == 2) {
         schedule[i] = new Game(divisions.get(i).get(0),
                 divisions.get(getDiv(macro, i)).get(2));
@@ -67,11 +57,6 @@ public class Scheduler {
         schedule[6 + i] = new Game(divisions.get(i).get(1),
                 divisions.get(getDiv(macro, i)).get(4));
         done++;
-        if (i < 3) {
-          schedule[12 + i] = new Game(divisions.get(i).get(3),
-                  divisions.get(getDiv((macro + 1) % 5, i)).get(3));
-          done++;
-        }
       } else if (micro == 3) {
         schedule[i] = new Game(divisions.get(i).get(0),
                 divisions.get(getDiv(macro, i)).get(1));
@@ -79,11 +64,6 @@ public class Scheduler {
         schedule[6 + i] = new Game(divisions.get(i).get(2),
                 divisions.get(getDiv(macro, i)).get(3));
         done++;
-        if (i < 3) {
-          schedule[12 + i] = new Game(divisions.get(i).get(4),
-                  divisions.get(getDiv((macro + 1) % 5, i)).get(4));
-          done++;
-        }
       } else if (micro == 4) {
         schedule[i] = new Game(divisions.get(i).get(1),
                 divisions.get(getDiv(macro, i)).get(2));
@@ -91,15 +71,85 @@ public class Scheduler {
         schedule[6 + i] = new Game(divisions.get(i).get(3),
                 divisions.get(getDiv(macro, i)).get(4));
         done++;
+        /*
         if (i < 3) {
           schedule[12 + i] = new Game(divisions.get(i).get(0),
                   divisions.get(getDiv((macro + 1) % 5, i)).get(0));
           done++;
         }
+        */
       }
     }
+
+    Game[] byeGames = scheduleByeGames(micro, macro, divisions);
+    schedule[12] = byeGames[0];
+    schedule[13] = byeGames[1];
+    schedule[14] = byeGames[2];
+    done += 3;
+
     assert (done == 15);
     return schedule;
+  }
+
+  private static Game[] scheduleByeGames(int micro, int macro,
+                                List<List<Team>> divisions) {
+    Game[] byeGames = new Game[3];
+    macro = (macro + 1) % 6;
+    if (macro == 0) { macro++; }
+    boolean[] accounted =
+            new boolean[] {false, false, false, false, false, false};
+    int done = 0;
+
+    while (done < 3) {
+
+      int index = Integer.MAX_VALUE;
+      for (int i = 0; i < accounted.length; i++) {
+        if (!accounted[i]) {
+          index = i;
+          break;
+        }
+      }
+
+      switch (micro) {
+        case 0:
+          byeGames[done] = new Game(divisions.get(index).get(2),
+                  divisions.get(getDiv(macro, index)).get(2));
+          accounted[index] = true;
+          accounted[getDiv(macro, index)] = true;
+          done++;
+          break;
+        case 1:
+          byeGames[done] = new Game(divisions.get(index).get(1),
+                  divisions.get(getDiv(macro, index)).get(1));
+          accounted[index] = true;
+          accounted[getDiv(macro, index)] = true;
+          done++;
+          break;
+        case 2:
+          byeGames[done] = new Game(divisions.get(index).get(3),
+                  divisions.get(getDiv(macro, index)).get(3));
+          accounted[index] = true;
+          accounted[getDiv(macro, index)] = true;
+          done++;
+          break;
+        case 3:
+          byeGames[done] = new Game(divisions.get(index).get(4),
+                  divisions.get(getDiv(macro, index)).get(4));
+          accounted[index] = true;
+          accounted[getDiv(macro, index)] = true;
+          done++;
+          break;
+        case 4:
+          byeGames[done] = new Game(divisions.get(index).get(0),
+                  divisions.get(getDiv(macro, index)).get(0));
+          accounted[index] = true;
+          accounted[getDiv(macro, index)] = true;
+          done++;
+          break;
+      }
+    }
+
+    return byeGames;
   }
 
   private static int getDiv(int macro, int div) {
