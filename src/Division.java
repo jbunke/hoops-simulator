@@ -14,4 +14,6 @@ public class Division {
       teams.add(team);
     }
   }
+
+  List<Team> getTeams() { return teams; }
 }

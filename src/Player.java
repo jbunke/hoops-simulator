@@ -2,6 +2,7 @@ public class Player {
   private String[] name;
   private String prefName;
   private Date birthDate;
+  private Team team;
 
   // TRAITS
 
@@ -12,6 +13,12 @@ public class Player {
     this.name = name;
     this.prefName = prefName;
     this.birthDate = birthDate;
+  }
+
+  Team getTeam() { return team; }
+
+  void setTeam(Team team) {
+    this.team = team;
   }
 
   @Override
