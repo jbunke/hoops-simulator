@@ -65,7 +65,7 @@ public class Series {
     for (int i = 0; i < 7; i++) {
       if (sequence[i] == null) { break; }
       assert (sequence[i].played);
-      System.out.println("hoops_root.Game " + (i + 1) + ": " + sequence[i]);
+      System.out.println("Game " + (i + 1) + ": " + sequence[i]);
       games = i;
     }
     games++;

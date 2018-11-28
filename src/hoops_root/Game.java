@@ -20,8 +20,8 @@ public class Game {
     assert (!played);
     // TODO - Have to still track points and player stats; OT; ...
     while (score[0] == score[1]) {
-      score[0] = 80 + (int)(Math.random() * 50);
-      score[1] = 80 + (int)(Math.random() * 50);
+      score[0] = away.quality() + (int)(Math.random() * 50);
+      score[1] = home.quality() + (int)(Math.random() * 50);
     }
 
     played = true;

@@ -19,7 +19,7 @@ public class Player {
   // STATS
   private int stats[];
 
-  Player(String[] name, String prefName, Date birthDate) {
+  public Player(String[] name, String prefName, Date birthDate) {
     this.name = name;
     this.prefName = prefName;
     this.birthDate = birthDate;
@@ -29,20 +29,20 @@ public class Player {
     this.jerseyNumber = -1;
     this.height = 70 + (int)(Math.random() * 15);
     this.weight = 155 + ((this.height - 70) * 7) + (int)(Math.random() * 10);
-    this.stats = new int[] {50, // shooting 0 - 99
-                            50, // rebounding 0 - 99
-                            50, // athleticism 0 - 99
-                            50, // passing 0 - 99
-                            50, // vision 0 - 99
-                            50, // clutch 0 - 99
-                            50, // free throw 0 - 99
-                            50, // block 0 - 99
-                            50, // driving 0 - 99
+    this.stats = new int[] {50 + (int)(Math.random() * 20), // shooting 0 - 99
+                            50 + (int)(Math.random() * 20), // rebounding 0 - 99
+                            50 + (int)(Math.random() * 20), // athleticism 0 - 99
+                            50 + (int)(Math.random() * 20), // passing 0 - 99
+                            50 + (int)(Math.random() * 20), // vision 0 - 99
+                            50 + (int)(Math.random() * 20), // clutch 0 - 99
+                            50 + (int)(Math.random() * 20), // free throw 0 - 99
+                            50 + (int)(Math.random() * 20), // block 0 - 99
+                            50 + (int)(Math.random() * 20), // driving 0 - 99
                             2,  // injury-prone 0 - 4
                             2}; // flagrant 0 - 4 (11 stats total)
   }
 
-  Player(String[] name, String prefName, Date birthDate, Position position,
+  public Player(String[] name, String prefName, Date birthDate, Position position,
          DominantHand dominantHand, int prefJerseyNumber,
          int height, int weight, int[] stats) {
     this.name = name;

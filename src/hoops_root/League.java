@@ -165,4 +165,11 @@ public class League {
     System.out.println("The " + year + " " + name + " Champions are the " +
             champion.name() + ".\n");
   }
+
+  void printTeamsQuality() {
+    for (Team team : teams) {
+      System.out.println(team.name() + " " + team.quality());
+    }
+    System.out.println();
+  }
 }

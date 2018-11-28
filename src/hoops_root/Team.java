@@ -17,7 +17,7 @@ public class Team {
   private List<Integer> availableNumbers;
   private Position[] lineupPriority;
 
-  Team(String code, String name, Player[] roster) {
+  public Team(String code, String name, Player[] roster) {
     this.code = code;
     this.name = name;
     this.record = new Record();
@@ -64,12 +64,11 @@ public class Team {
       }
     }
     for (int i = 0; i < 5; i++) {
-      while (assigned < 5) {
-        if (available[i]) {
-          lineupPriority[assigned] = Position.fromIndex(i);
-          assigned++;
-        }
+      if (available[i]) {
+        lineupPriority[assigned] = Position.fromIndex(i);
+        assigned++;
       }
+      if (assigned >= 5) { break; }
     }
   }
 
@@ -131,6 +130,14 @@ public class Team {
   Record getRecord() { return record; }
 
   Player[] getRoster() { return roster; }
+
+  int quality() {
+    int quality = 0;
+    for (int i = 0; i < 5; i++) {
+      quality += Player.overall(playing[i], Position.fromIndex(i));
+    }
+    return quality / 5;
+  }
 
   // returns a team of bots
   static Team botTeam(String code, String name) {
