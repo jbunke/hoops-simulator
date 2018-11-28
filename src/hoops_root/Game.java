@@ -45,7 +45,7 @@ public class Game {
   }
 
   /*
-  hoops_root.Team winner() {
+  Team winner() {
     assert (played);
     assert (score[0] != score[1]);
 

@@ -7,23 +7,12 @@ import java.util.List;
 
 public class Main {
   public static void main(String[] args) {
-    // TODO - Pacific hoops_root.Division (GSW, LAC, LAL, PHX, SAC)
-    /*
-    Player lebron = new Player(new String[] {"LeBron", "Raymone", "James"},
-            "LeBron", new Date(1984, 12, 30),
-            Position.SMALL_FORWARD, DominantHand.RIGHT, 23,
-            new int[] {95, 90, 96, 85, 94, 82, 80, 90, 98, 0, 2});
-    */
-    // System.out.println(lebron + " - " + lebron.overall());
     List<Team> pacificTeams = new ArrayList<>();
     pacificTeams.add(NBATeams.GSW());
     pacificTeams.add(Team.botTeam("LAC", "Los Angeles Clippers"));
     pacificTeams.add(NBATeams.LAL());
     pacificTeams.add(Team.botTeam("PHX", "Phoenix Suns"));
     pacificTeams.add(Team.botTeam("SAC", "Sacramento Kings"));
-
-    // TODO - testing
-    // Player MVP = gsw.getPlayer("Steph Curry");
 
     Division pacific = new Division("Pacific", pacificTeams);
 
@@ -37,7 +26,7 @@ public class Main {
 
     List<Team> northwestTeams = new ArrayList<>();
     northwestTeams.add(Team.botTeam("DEN", "Denver Nuggets"));
-    northwestTeams.add(Team.botTeam("OKC", "Oklahoma City Thunder"));
+    northwestTeams.add(NBATeams.OKC());
     northwestTeams.add(Team.botTeam("POR", "Portland Trailblazers"));
     northwestTeams.add(Team.botTeam("MIN", "Minnesota Timberwolves"));
     northwestTeams.add(Team.botTeam("UTA", "Utah Jazz"));
@@ -48,7 +37,7 @@ public class Main {
 
     List<Team> atlanticTeams = new ArrayList<>();
     atlanticTeams.add(Team.botTeam("TOR", "Toronto Raptors"));
-    atlanticTeams.add(Team.botTeam("PHI", "Philadelphia 76ers"));
+    atlanticTeams.add(NBATeams.PHI());
     atlanticTeams.add(NBATeams.BOS());
     atlanticTeams.add(Team.botTeam("BRK", "Brooklyn Nets"));
     atlanticTeams.add(Team.botTeam("NYK", "New York Knicks"));
