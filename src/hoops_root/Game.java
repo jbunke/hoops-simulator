@@ -1,16 +1,16 @@
+package hoops_root;
+
 public class Game {
-  private Team away;
-  private Team home;
-  private int[] score = new int[2]; // {away, home}
-  private boolean played;
-  private boolean playoffs;
+  Team away;
+  Team home;
+  int[] score = new int[2]; // {away, home}
+  boolean played;
 
   Game(Team away, Team home) {
     this.away = away;
     this.home = home;
     this.score = new int[] {0, 0};
     this.played = false;
-    this.playoffs = false;
 
     away.addGameToSchedule(this);
     home.addGameToSchedule(this);
@@ -23,29 +23,29 @@ public class Game {
       score[0] = 80 + (int)(Math.random() * 50);
       score[1] = 80 + (int)(Math.random() * 50);
     }
+
     played = true;
     outcome();
   }
 
-  private void outcome() {
+  void outcome() {
     assert (played);
     assert (score[0] != score[1]);
 
-    if (!playoffs) {
-      if (score[0] > score[1]) {
-        away.getRecord().addWin();
-        home.getRecord().addLoss();
-      } else {
-        away.getRecord().addLoss();
-        home.getRecord().addWin();
-      }
+    if (score[0] > score[1]) {
+      away.getRecord().addWin();
+      home.getRecord().addLoss();
+    } else {
+      away.getRecord().addLoss();
+      home.getRecord().addWin();
     }
 
     away.shiftGameToPast(this);
     home.shiftGameToPast(this);
   }
 
-  Team winner() {
+  /*
+  hoops_root.Team winner() {
     assert (played);
     assert (score[0] != score[1]);
 
@@ -54,6 +54,7 @@ public class Game {
     }
     return home;
   }
+  */
 
   @Override
   public String toString() {

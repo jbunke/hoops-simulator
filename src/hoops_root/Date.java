@@ -1,7 +1,9 @@
+package hoops_root;
+
 public class Date {
-  private int year;
-  private int month;
-  private int day;
+  final int year;
+  final int month;
+  final int day;
 
   Date(int year, int month, int day) {
     this.year = year;

@@ -1,35 +1,97 @@
+package hoops_root;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Scheduler {
-  static Game[] gameDay(int gameday, List<Team> teams) {
-    Game[] schedule = new Game[teams.size() / 2];
 
-    List<List<Team>> divisions = new ArrayList<>();
-    List<Team> div1 = new ArrayList<>();
-    List<Team> div2 = new ArrayList<>();
-    List<Team> div3 = new ArrayList<>();
-    List<Team> div4 = new ArrayList<>();
-    List<Team> div5 = new ArrayList<>();
-    List<Team> div6 = new ArrayList<>();
+  static List<PlayoffGame[]> finals(Series series) {
+    List<PlayoffGame[]> finalsGames = new ArrayList<>();
 
-    for (int i = 0; i < 5; i++) {
-      div1.add(teams.get(i));
-      div2.add(teams.get(5 + i));
-      div3.add(teams.get(10 + i));
-      div4.add(teams.get(15 + i));
-      div5.add(teams.get(20 + i));
-      div6.add(teams.get(25 + i));
+    int game = 0;
+    while (game < 7) {
+      PlayoffGame[] finalGame = new PlayoffGame[1];
+
+      switch (game) {
+        case 0:
+        case 1:
+        case 4:
+        case 6:
+          finalGame[0] = new PlayoffGame(series.getLowCede(),
+                  series.getHighCede(), series);
+          break;
+        default:
+          finalGame[0] = new PlayoffGame(series.getHighCede(),
+                  series.getLowCede(), series);
+          break;
+      }
+      finalsGames.add(finalGame);
+      game++;
     }
 
-    divisions.add(div1);
-    divisions.add(div2);
-    divisions.add(div3);
-    divisions.add(div4);
-    divisions.add(div5);
-    divisions.add(div6);
+    return finalsGames;
+  }
 
-    gameday = gameday % 29;
+  static List<PlayoffGame[]> playoffRound(List<Team> conf1Teams,
+                                          List<Team> conf2Teams,
+                                          Series[] series) {
+    // 2-2-1-1-1 court 7 game series format
+    assert (conf1Teams.size() == conf2Teams.size());
+    assert (conf1Teams.size() % 2 == 0);
+    int game = 0;
+    int conf2Offset = conf1Teams.size() / 2;
+    int confSize = conf1Teams.size();
+    // TODO - Delete: hoops_root.Series[] series = new hoops_root.Series[confSize];
+    List<PlayoffGame[]> round = new ArrayList<>();
+
+    // SCHEDULE GAMES
+    while (game < 7) {
+      PlayoffGame[] playoff = new PlayoffGame[conf1Teams.size()];
+
+      for (int i = 0; i < conf1Teams.size() / 2; i++) {
+        switch (game) {
+          case 0:
+          case 1:
+          case 4:
+          case 6:
+            playoff[i] = new PlayoffGame(conf1Teams.get(confSize - (i + 1)),
+                    conf1Teams.get(i), series[i]);
+            playoff[i + conf2Offset] = new PlayoffGame(conf2Teams.get(confSize - (i + 1)),
+                    conf2Teams.get(i), series[i + conf2Offset]);
+            break;
+          default:
+            playoff[i] = new PlayoffGame(conf1Teams.get(i),
+                    conf1Teams.get(confSize - (i + 1)), series[i]);
+            playoff[i + conf2Offset] = new PlayoffGame(conf2Teams.get(i),
+                    conf2Teams.get(confSize - (i + 1)), series[i + conf2Offset]);
+        }
+      }
+      round.add(playoff);
+      game++;
+    }
+
+    return round;
+  }
+
+  // REGULAR SEASON (NBA FORMAT SPECIFIC)
+  static Game[] gameDay(int gameday, List<Team> teams) {
+    Game[] schedule = new Game[teams.size() / 2];
+    int teamsCount = teams.size();
+    assert (teamsCount % 6 == 0);
+    int divSize = teamsCount / 6;
+
+    List<List<Team>> divisions = new ArrayList<>();
+    for (int i = 0; i < 6; i++) {
+      divisions.add(new ArrayList<>());
+    }
+
+    for (int i = 0; i < divSize; i++) {
+      for (int j = 0; j < 6; j++) {
+        divisions.get(j).add(teams.get((j * divSize) + i));
+      }
+    }
+
+    gameday = gameday % (teamsCount - 1);
 
     int micro = gameday % 5;
     int macro = gameday / 5;
@@ -71,13 +133,6 @@ public class Scheduler {
         schedule[6 + i] = new Game(divisions.get(i).get(3),
                 divisions.get(getDiv(macro, i)).get(4));
         done++;
-        /*
-        if (i < 3) {
-          schedule[12 + i] = new Game(divisions.get(i).get(0),
-                  divisions.get(getDiv((macro + 1) % 5, i)).get(0));
-          done++;
-        }
-        */
       }
     }
 
@@ -94,7 +149,7 @@ public class Scheduler {
   private static Game[] scheduleByeGames(int micro, int macro,
                                 List<List<Team>> divisions) {
     Game[] byeGames = new Game[3];
-    macro = (macro + 1) % 6;
+    macro = (macro + 1) % 5;
     if (macro == 0) { macro++; }
     boolean[] accounted =
             new boolean[] {false, false, false, false, false, false};

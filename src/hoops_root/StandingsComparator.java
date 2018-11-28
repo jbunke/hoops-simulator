@@ -1,3 +1,5 @@
+package hoops_root;
+
 import java.util.Comparator;
 
 public class StandingsComparator implements Comparator<Team> {

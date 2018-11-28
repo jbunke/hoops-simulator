@@ -1,3 +1,5 @@
+package hoops_root;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -36,7 +38,7 @@ public class Conference {
   void printStandings() {
     updateStandings();
 
-    System.out.println(name + " Conference standings:");
+    System.out.println(name + " hoops_root.Conference standings:");
     for (int i = 0; i < teams.size(); i++) {
       System.out.println((i + 1) + ": " + teams.get(i).nameAndRecord());
     }
@@ -48,4 +50,14 @@ public class Conference {
   }
 
   List<Team> getTeams() { return teams; }
+
+  List<Team> getPlayoffTeams() {
+    List<Team> playoffTeams = new ArrayList<>();
+    updateStandings();
+
+    for (int i = 0; i < playoffCutoff; i++) {
+      playoffTeams.add(teams.get(i));
+    }
+    return playoffTeams;
+  }
 }

@@ -1,3 +1,5 @@
+package hoops_root;
+
 public class Record {
   private int wins;
   private int losses;
