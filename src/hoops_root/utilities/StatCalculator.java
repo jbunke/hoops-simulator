@@ -279,12 +279,10 @@ public class StatCalculator {
     return statsList.get(k);
   }
 
-  public static int[] fetch(String location) {
-    return calculate(location);
-  }
-
-  public static int[] updateAndFetch(URL url, String location) {
-    update(url, location);
+  public static int[] updateAndFetch(URL url, String location, boolean online) {
+    if (online) {
+      update(url, location);
+    }
     return calculate(location);
   }
 }

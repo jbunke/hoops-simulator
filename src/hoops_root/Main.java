@@ -6,13 +6,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
+  private static final boolean online = false;
+
   public static void main(String[] args) {
-    Team legends = NBATeams.LEGENDS();
+    Team legends = NBATeams.LEGENDS(online);
     System.out.println(legends.name() + " " + legends.quality());
     List<Team> pacificTeams = new ArrayList<>();
-    pacificTeams.add(NBATeams.GSW());
+    pacificTeams.add(NBATeams.GSW(online));
     pacificTeams.add(Team.botTeam("LAC", "Los Angeles Clippers"));
-    pacificTeams.add(NBATeams.LAL());
+    pacificTeams.add(NBATeams.LAL(online));
     pacificTeams.add(Team.botTeam("PHX", "Phoenix Suns"));
     pacificTeams.add(Team.botTeam("SAC", "Sacramento Kings"));
 
@@ -22,15 +24,15 @@ public class Main {
     southwestTeams.add(Team.botTeam("MEM", "Memphis Grizzlies"));
     southwestTeams.add(Team.botTeam("NOP", "New Orleans Pelicans"));
     southwestTeams.add(Team.botTeam("DAL", "Dallas Mavericks"));
-    southwestTeams.add(NBATeams.HOU());
+    southwestTeams.add(NBATeams.HOU(online));
     southwestTeams.add(Team.botTeam("SAS", "San Antonio Spurs"));
     Division southwest = new Division("Southwest", southwestTeams);
 
     List<Team> northwestTeams = new ArrayList<>();
     northwestTeams.add(Team.botTeam("DEN", "Denver Nuggets"));
-    northwestTeams.add(NBATeams.OKC());
+    northwestTeams.add(NBATeams.OKC(online));
     northwestTeams.add(Team.botTeam("POR", "Portland Trailblazers"));
-    northwestTeams.add(NBATeams.MIN());
+    northwestTeams.add(NBATeams.MIN(online));
     northwestTeams.add(Team.botTeam("UTA", "Utah Jazz"));
     Division northwest = new Division("Northwest", northwestTeams);
 
@@ -38,15 +40,15 @@ public class Main {
             List.of(pacific, southwest, northwest));
 
     List<Team> atlanticTeams = new ArrayList<>();
-    atlanticTeams.add(NBATeams.TOR());
-    atlanticTeams.add(NBATeams.PHI());
-    atlanticTeams.add(NBATeams.BOS());
+    atlanticTeams.add(NBATeams.TOR(online));
+    atlanticTeams.add(NBATeams.PHI(online));
+    atlanticTeams.add(NBATeams.BOS(online));
     atlanticTeams.add(Team.botTeam("BRK", "Brooklyn Nets"));
     atlanticTeams.add(Team.botTeam("NYK", "New York Knicks"));
     Division atlantic = new Division("Atlantic", atlanticTeams);
 
     List<Team> centralTeams = new ArrayList<>();
-    centralTeams.add(NBATeams.MIL());
+    centralTeams.add(NBATeams.MIL(online));
     centralTeams.add(Team.botTeam("DET", "Detroit Pistons"));
     centralTeams.add(Team.botTeam("IND", "Indiana Pacers"));
     centralTeams.add(Team.botTeam("CHI", "Chicago Bulls"));
