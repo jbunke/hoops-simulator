@@ -38,8 +38,7 @@ public class NBATeams {
                     "resources/player_stats/NBA/bos/gordon_hayward.csv"));
     roster = botsFrom(5, roster);
     for (Player player : roster) {
-      System.out.println(player + " - " +
-              Player.overall(player, player.position()));
+      System.out.println(player + " - " + player.overall());
     }
     return new Team("BOS", "Boston Celtics", roster);
   }
@@ -72,12 +71,41 @@ public class NBATeams {
             Position.CENTER, DominantHand.RIGHT, 5, 81, 220,
             StatCalculator.calculate(
                     "resources/player_stats/NBA/gsw/kevon_looney.csv"));
-    roster = botsFrom(5, roster);
+    roster[5] = new Player(new String[] {"DeMarcus", "Amir", "Cousins"},
+            "DeMarcus", new Date(1990, 8, 13),
+            Position.CENTER, DominantHand.RIGHT, 0, 83, 270,
+            StatCalculator.calculate(
+                    "resources/player_stats/NBA/gsw/demarcus_cousins.csv"));
+    roster = botsFrom(6, roster);
     for (Player player : roster) {
-      System.out.println(player + " - " +
-              Player.overall(player, player.position()));
+      System.out.println(player + " - " + player.overall());
     }
     return new Team("GSW", "Golden State Warriors", roster);
+  }
+
+  public static Team HOU() {
+    // s, r, a, p, v, c, f, b, d
+    Player[] roster = new Player[12];
+    roster[0] = new Player(new String[] {"James", "Edward", "Harden"},
+            "James", new Date(1989, 8, 26),
+            Position.SHOOTING_GUARD, DominantHand.LEFT, 13, 77, 220,
+            StatCalculator.calculate(
+                    "resources/player_stats/NBA/hou/james_harden.csv"));
+    roster[1] = new Player(new String[] {"Christopher", "Emmanuel", "Paul"},
+            "Chris", new Date(1985, 5, 6),
+            Position.POINT_GUARD, DominantHand.RIGHT, 3, 72, 175,
+            StatCalculator.calculate(
+                    "resources/player_stats/NBA/hou/chris_paul.csv"));
+    roster[2] = new Player(new String[] {"Clint", "N'Dumba-Capela", "Capela"},
+            "Clint", new Date(1994, 5, 18),
+            Position.CENTER, DominantHand.RIGHT, 15, 82, 240,
+            StatCalculator.calculate(
+                    "resources/player_stats/NBA/hou/clint_capela.csv"));
+    roster = botsFrom(3, roster);
+    for (Player player : roster) {
+      System.out.println(player + " - " + player.overall());
+    }
+    return new Team("HOU", "Houston Rockets", roster);
   }
 
   public static Team LAL() {
@@ -95,7 +123,7 @@ public class NBATeams {
                     "resources/player_stats/NBA/lal/kyle_kuzma.csv"));
     roster[2] = new Player(new String[] {"LeBron", "Raymone", "James"},
             "LeBron", new Date(1984, 12, 30),
-            Position.POWER_FORWARD, DominantHand.RIGHT, 23, 80, 250,
+            Position.SMALL_FORWARD, DominantHand.RIGHT, 23, 80, 250,
             StatCalculator.calculate(
                     "resources/player_stats/NBA/lal/lebron_james.csv"));
     roster[3] = new Player(new String[] {"Brandon", "Xavier", "Ingram"},
@@ -110,8 +138,7 @@ public class NBATeams {
                     "resources/player_stats/NBA/lal/tyson_chandler.csv"));
     roster = botsFrom(5, roster);
     for (Player player : roster) {
-      System.out.println(player + " - " +
-              Player.overall(player, player.position()));
+      System.out.println(player + " - " + player.overall());
     }
     return new Team("LAL", "Los Angeles Lakers", roster);
   }
@@ -126,8 +153,7 @@ public class NBATeams {
                     "resources/player_stats/NBA/mil/giannis_antetokounmpo.csv"));
     roster = botsFrom(1, roster);
     for (Player player : roster) {
-      System.out.println(player + " - " +
-              Player.overall(player, player.position()));
+      System.out.println(player + " - " + player.overall());
     }
     return new Team("MIL", "Milwaukee Bucks", roster);
   }
@@ -155,8 +181,7 @@ public class NBATeams {
                     "resources/player_stats/NBA/okc/steven_adams.csv"));
     roster = botsFrom(3, roster);
     for (Player player : roster) {
-      System.out.println(player + " - " +
-              Player.overall(player, player.position()));
+      System.out.println(player + " - " + player.overall());
     }
     return new Team("OKC", "Oklahoma City Thunder", roster);
   }
@@ -184,8 +209,7 @@ public class NBATeams {
                     "resources/player_stats/NBA/phi/jimmy_butler.csv"));
     roster = botsFrom(3, roster);
     for (Player player : roster) {
-      System.out.println(player + " - " +
-              Player.overall(player, player.position()));
+      System.out.println(player + " - " + player.overall());
     }
     return new Team("PHI", "Philadelphia 76ers", roster);
   }
@@ -194,12 +218,26 @@ public class NBATeams {
     // s, r, a, p, v, c, f, b, d
     Player[] roster = new Player[12];
     // Kawhi Leonard
+    roster[0] = new Player(new String[] {"Kawhi", "Leonard"},
+            "Kawhi", new Date(1991, 6, 29),
+            Position.SMALL_FORWARD, DominantHand.RIGHT, 2, 79, 230,
+            StatCalculator.calculate(
+                    "resources/player_stats/NBA/tor/kawhi_leonard.csv"));
     // Kyle Lowry
+    roster[1] = new Player(new String[] {"Kyle", "Lowry"},
+            "Kyle", new Date(1986, 3, 25),
+            Position.POINT_GUARD, DominantHand.RIGHT, 7, 72, 205,
+            StatCalculator.calculate(
+                    "resources/player_stats/NBA/tor/kyle_lowry.csv"));
     // Jonas Valanciunas
-    roster = botsFrom(0, roster);
+    roster[2] = new Player(new String[] {"Jonas", "Valanciunas"},
+            "Jonas", new Date(1992, 5, 6),
+            Position.POINT_GUARD, DominantHand.RIGHT, 17, 84, 265,
+            StatCalculator.calculate(
+                    "resources/player_stats/NBA/tor/jonas_valanciunas.csv"));
+    roster = botsFrom(3, roster);
     for (Player player : roster) {
-      System.out.println(player + " - " +
-              Player.overall(player, player.position()));
+      System.out.println(player + " - " + player.overall());
     }
     return new Team("TOR", "Toronto Raptors", roster);
   }
@@ -207,11 +245,14 @@ public class NBATeams {
   public static Team shell() {
     // s, r, a, p, v, c, f, b, d
     Player[] roster = new Player[12];
-
+    roster[0] = new Player(new String[] {"I", "Don't", "Exist"},
+            "I", new Date(2000, 1, 1),
+            Position.POINT_GUARD, DominantHand.RIGHT, 23, 72, 180,
+            StatCalculator.calculate(
+                    "resources/player_stats/NBA/team/player.csv"));
     roster = botsFrom(0, roster);
     for (Player player : roster) {
-      System.out.println(player + " - " +
-              Player.overall(player, player.position()));
+      System.out.println(player + " - " + player.overall());
     }
     return new Team("SHL", "shell", roster);
   }

@@ -20,7 +20,7 @@ public class Main {
     southwestTeams.add(Team.botTeam("MEM", "Memphis Grizzlies"));
     southwestTeams.add(Team.botTeam("NOP", "New Orleans Pelicans"));
     southwestTeams.add(Team.botTeam("DAL", "Dallas Mavericks"));
-    southwestTeams.add(Team.botTeam("HOU", "Houston Rockets"));
+    southwestTeams.add(NBATeams.HOU());
     southwestTeams.add(Team.botTeam("SAS", "San Antonio Spurs"));
     Division southwest = new Division("Southwest", southwestTeams);
 
@@ -36,7 +36,7 @@ public class Main {
             List.of(pacific, southwest, northwest));
 
     List<Team> atlanticTeams = new ArrayList<>();
-    atlanticTeams.add(Team.botTeam("TOR", "Toronto Raptors"));
+    atlanticTeams.add(NBATeams.TOR());
     atlanticTeams.add(NBATeams.PHI());
     atlanticTeams.add(NBATeams.BOS());
     atlanticTeams.add(Team.botTeam("BRK", "Brooklyn Nets"));

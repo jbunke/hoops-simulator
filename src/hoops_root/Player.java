@@ -18,6 +18,7 @@ public class Player {
 
   // STATS
   private int stats[];
+  private int overall;
 
   public Player(String[] name, String prefName, Date birthDate) {
     this.name = name;
@@ -40,6 +41,7 @@ public class Player {
                             50 + (int)(Math.random() * 20), // driving 0 - 99
                             2,  // injury-prone 0 - 4
                             2}; // flagrant 0 - 4 (11 stats total)
+    this.overall = Player.overall(this, this.position);
   }
 
   public Player(String[] name, String prefName, Date birthDate, Position position,
@@ -55,6 +57,7 @@ public class Player {
     this.height = height;
     this.weight = weight;
     this.stats = stats;
+    this.overall = Player.overall(this, this.position);
   }
 
   void setJerseyNumber(int jerseyNumber) { this.jerseyNumber = jerseyNumber; }
@@ -64,6 +67,8 @@ public class Player {
   void setTeam(Team team) {
     this.team = team;
   }
+
+  public int overall() { return overall; }
 
   public static int overall(Player player, Position position) {
     int[] weight = new int[10];
