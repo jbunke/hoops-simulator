@@ -27,3 +27,8 @@ data directly from [Basketball-Reference.com](https://www.basketball-reference.c
 ### 3. Possible extension
 
  - Add interface and make season playable as a certain team. Make games with team playable and simulate all others.
+
+## Disclaimer and Help
+This project is still a work in progress and is not practically usable at this stage of development.
+
+Source code is in `src/hoops_root/` and the start class is `Main.java`. However, this class's contents are only used for testing purposes at the moment.
