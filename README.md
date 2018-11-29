@@ -1,7 +1,7 @@
 # Hoops Simulator
 *Hoops Simulator* simulates seasons of fantasy basketball. The league, conferences, divisions, format, teams, players, and stats are
 all customisable. *HS* includes the possibility to play with current NBA teams and players, assigning player attribute stats by pulling
-data directly from [Basketball-Reference.com](www/basketball-reference.com).
+data directly from [Basketball-Reference.com](www.basketball-reference.com).
 
 ### 1. Implemented features
 
