@@ -9,6 +9,7 @@ public class Team {
   private final String code; // three-char code; like "GSW"
   private final String name; // team name; like "Golden State Warriors"
   private Record record;
+  private int seed;
   private Player[] roster;
   private Player[] playing;
   private List<Game> pastGames;
@@ -21,6 +22,7 @@ public class Team {
     this.code = code;
     this.name = name;
     this.record = new Record();
+    this.seed = 0;
     this.roster = roster;
     this.pastGames = new ArrayList<>();
     this.upcomingGames = new ArrayList<>();
@@ -126,6 +128,10 @@ public class Team {
     }
     return null;
   }
+
+  int getSeed() { return seed; }
+
+  void setSeed(int seed) { this.seed = seed; }
 
   Record getRecord() { return record; }
 

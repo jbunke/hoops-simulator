@@ -17,12 +17,12 @@ public class Scheduler {
         case 1:
         case 4:
         case 6:
-          finalGame[0] = new PlayoffGame(series.getLowCede(),
-                  series.getHighCede(), series);
+          finalGame[0] = new PlayoffGame(series.getLowSeed(),
+                  series.getHighSeed(), series);
           break;
         default:
-          finalGame[0] = new PlayoffGame(series.getHighCede(),
-                  series.getLowCede(), series);
+          finalGame[0] = new PlayoffGame(series.getHighSeed(),
+                  series.getLowSeed(), series);
           break;
       }
       finalsGames.add(finalGame);

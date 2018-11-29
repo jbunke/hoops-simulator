@@ -30,15 +30,15 @@ public class Player {
     this.jerseyNumber = -1;
     this.height = 70 + (int)(Math.random() * 15);
     this.weight = 155 + ((this.height - 70) * 7) + (int)(Math.random() * 10);
-    this.stats = new int[] {50 + (int)(Math.random() * 20), // shooting 0 - 99
-                            50 + (int)(Math.random() * 20), // rebounding 0 - 99
-                            50 + (int)(Math.random() * 20), // athleticism 0 - 99
-                            50 + (int)(Math.random() * 20), // passing 0 - 99
-                            50 + (int)(Math.random() * 20), // vision 0 - 99
-                            50 + (int)(Math.random() * 20), // clutch 0 - 99
-                            50 + (int)(Math.random() * 20), // free throw 0 - 99
-                            50 + (int)(Math.random() * 20), // block 0 - 99
-                            50 + (int)(Math.random() * 20), // driving 0 - 99
+    this.stats = new int[] {50 + (int)(Math.random() * 30), // shooting 0 - 99
+                            50 + (int)(Math.random() * 30), // rebounding 0 - 99
+                            50 + (int)(Math.random() * 30), // athleticism 0 - 99
+                            50 + (int)(Math.random() * 30), // passing 0 - 99
+                            50 + (int)(Math.random() * 30), // vision 0 - 99
+                            50 + (int)(Math.random() * 30), // clutch 0 - 99
+                            50 + (int)(Math.random() * 30), // free throw 0 - 99
+                            50 + (int)(Math.random() * 30), // block 0 - 99
+                            50 + (int)(Math.random() * 30), // driving 0 - 99
                             2,  // injury-prone 0 - 4
                             2}; // flagrant 0 - 4 (11 stats total)
     this.overall = Player.overall(this, this.position);

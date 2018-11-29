@@ -175,6 +175,28 @@ public class NBATeams {
     return new Team("MIL", "Milwaukee Bucks", roster);
   }
 
+  public static Team MIN() {
+    // s, r, a, p, v, c, f, b, d
+    Player[] roster = new Player[12];
+    try {
+      roster[0] = new Player(new String[] {"Karl-Anthony", "Towns"},
+              "Karl-Anthony", new Date(1995, 11, 15),
+              Position.CENTER, DominantHand.RIGHT, 32, 84, 244,
+              StatCalculator.updateAndFetch(new URL(BBRLINK + "t/townska01.html"),
+                      STATPATH + "min/karlanthony_towns.csv"));
+      roster[1] = new Player(new String[] {"Derrick", "Martell", "Rose"},
+              "Derrick", new Date(1988, 10, 4),
+              Position.POINT_GUARD, DominantHand.RIGHT, 25, 75, 190,
+              StatCalculator.updateAndFetch(new URL(BBRLINK + "r/rosede01.html"),
+                      STATPATH + "min/derrick_rose.csv"));
+    } catch (MalformedURLException e) {
+      e.printStackTrace();
+    }
+    printRoster(roster);
+    roster = botsFrom(2, roster);
+    return new Team("MIN", "Minnesota Timberwolves", roster);
+  }
+
   public static Team OKC() {
     // s, r, a, p, v, c, f, b, d
     Player[] roster = new Player[12];
@@ -263,6 +285,38 @@ public class NBATeams {
     printRoster(roster);
     roster = botsFrom(3, roster);
     return new Team("TOR", "Toronto Raptors", roster);
+  }
+
+  public static Team LEGENDS() {
+    // s, r, a, p, v, c, f, b, d
+    Player[] roster = new Player[12];
+    try {
+      roster[0] = new Player(new String[] {"Michael", "Jeffrey", "Jordan"},
+              "Michael", new Date(1963, 2, 17),
+              Position.SMALL_FORWARD, DominantHand.RIGHT, 23, 78, 195,
+              StatCalculator.best(STATPATH + "leg/michael_jordan.csv"));
+      roster[1] = new Player(new String[] {"Kareem", "Abdul-Jabbar"},
+              "Kareem", new Date(1947, 4, 16),
+              Position.CENTER, DominantHand.RIGHT, 33, 86, 225,
+              StatCalculator.best(STATPATH + "leg/kareem_abduljabbar.csv"));
+      roster[2] = new Player(new String[] {"Earvin", "Johnson"},
+              "Magic", new Date(1959, 8, 14),
+              Position.POINT_GUARD, DominantHand.RIGHT, 32, 81, 215,
+              StatCalculator.best(STATPATH + "leg/magic_johnson.csv"));
+      roster[3] = new Player(new String[] {"Kobe", "Bean", "Bryant"},
+              "Kobe", new Date(1978, 8, 23),
+              Position.SHOOTING_GUARD, DominantHand.RIGHT, 24, 78, 212,
+              StatCalculator.best(STATPATH + "leg/kobe_bryant.csv"));
+      roster[4] = new Player(new String[] {"Timothy", "Theodore", "Duncan"},
+              "Tim", new Date(1976, 4, 25),
+              Position.POWER_FORWARD, DominantHand.RIGHT, 21, 83, 250,
+              StatCalculator.best(STATPATH + "leg/tim_duncan.csv"));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    printRoster(roster);
+    roster = botsFrom(5, roster);
+    return new Team("LEG", "NBA Legends", roster);
   }
 
   public static Team shell() {

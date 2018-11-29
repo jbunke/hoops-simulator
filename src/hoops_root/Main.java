@@ -7,6 +7,8 @@ import java.util.List;
 
 public class Main {
   public static void main(String[] args) {
+    Team legends = NBATeams.LEGENDS();
+    System.out.println(legends.name() + " " + legends.quality());
     List<Team> pacificTeams = new ArrayList<>();
     pacificTeams.add(NBATeams.GSW());
     pacificTeams.add(Team.botTeam("LAC", "Los Angeles Clippers"));
@@ -28,7 +30,7 @@ public class Main {
     northwestTeams.add(Team.botTeam("DEN", "Denver Nuggets"));
     northwestTeams.add(NBATeams.OKC());
     northwestTeams.add(Team.botTeam("POR", "Portland Trailblazers"));
-    northwestTeams.add(Team.botTeam("MIN", "Minnesota Timberwolves"));
+    northwestTeams.add(NBATeams.MIN());
     northwestTeams.add(Team.botTeam("UTA", "Utah Jazz"));
     Division northwest = new Division("Northwest", northwestTeams);
 

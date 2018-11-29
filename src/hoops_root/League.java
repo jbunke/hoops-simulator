@@ -106,9 +106,19 @@ public class League {
 
   private void simulatePostSeason() {
     assert (gameDaysPlayed == totalGamesPerTeam);
-    // PLAYOFF INITIALIZER
+    // SEED TEAMS
+    conferences[0].updateStandings();
+    conferences[1].updateStandings();
     List<Team> playoffsConf1 = conferences[0].getPlayoffTeams();
     List<Team> playoffsConf2 = conferences[1].getPlayoffTeams();
+    assert (playoffsConf1.size() == playoffsConf2.size());
+
+    for (int i = 0; i < playoffsConf1.size(); i++) {
+      playoffsConf1.get(i).setSeed(i + 1);
+      playoffsConf2.get(i).setSeed(i + 1);
+    }
+
+    // PLAYOFF INITIALIZER
     Team conf1Champ;
     Team conf2Champ;
     int round = 0;

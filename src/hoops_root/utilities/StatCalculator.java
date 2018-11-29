@@ -1,9 +1,6 @@
 package hoops_root.utilities;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -56,6 +53,12 @@ public class StatCalculator {
   private static int[] generateStats(List<String[]> table, int index) {
     int[] stats = new int[11];
 
+    int threshold = 0;
+    for (String s : table.get(index)) {
+      if (s.equals("")) { threshold++; }
+    }
+    if (threshold > 1) { return stats; }
+
     // shooting
     float s3ptPerc = 0;
 
@@ -90,8 +93,11 @@ public class StatCalculator {
     stats[5] = 70; // how to assess clutch?
 
     // free throw
-    float freeThrow = Float.parseFloat(table.get(index)[20]);
-    stats[6] = Math.min((int)(freeThrow * 100) + 6, 99);
+    stats[6] = 30;
+    if (table.get(index)[20].length() > 0) {
+      float freeThrow = Float.parseFloat(table.get(index)[20]);
+      stats[6] = Math.min((int)(freeThrow * 100) + 6, 99);
+    }
 
     // blocking
     float blocking = Float.parseFloat(table.get(index)[26]);
@@ -106,8 +112,10 @@ public class StatCalculator {
     int startingAge = Integer.parseInt(table.get(0)[1]);
     int currentAge = Integer.parseInt(table.get(0)[1]);
     for (int i = 0; i < (table.size() - 1); i++) {
-      gamesPlayed += Integer.parseInt(table.get(i)[5]);
-      currentAge = Integer.parseInt(table.get(i)[1]);
+      if (table.get(i).length >= 6) {
+        gamesPlayed += Integer.parseInt(table.get(i)[5]);
+        currentAge = Integer.parseInt(table.get(i)[1]);
+      }
     }
     int gamesPerSeason = gamesPlayed / ((currentAge + 1) - startingAge);
 
@@ -130,7 +138,7 @@ public class StatCalculator {
     return stats;
   }
 
-  public static int[] calculate(String location) {
+  private static int[] calculate(String location) {
     List<String[]> table = readCSV(location);
     int index = seasonIndex(table);
     return generateStats(table, index);
@@ -248,6 +256,31 @@ public class StatCalculator {
       e.printStackTrace();
     }
     fileWrite(stats, location);
+  }
+
+  public static int[] best(String location) {
+    List<String[]> table = readCSV(location);
+    List<int[]> statsList = new ArrayList<>();
+    int k = 1;
+    int max = Integer.MIN_VALUE;
+    for (int i = 0; i < table.size(); i++) {
+      if (table.get(i).length == 30) {
+        statsList.add(generateStats(table, i));
+        int statSum = 0;
+        for (int j = 0; j < 9; j++) {
+          statSum += statsList.get(statsList.size() - 1)[j];
+        }
+        if (statSum > max) {
+          max = statSum;
+          k = statsList.size() - 1;
+        }
+      }
+    }
+    return statsList.get(k);
+  }
+
+  public static int[] fetch(String location) {
+    return calculate(location);
   }
 
   public static int[] updateAndFetch(URL url, String location) {

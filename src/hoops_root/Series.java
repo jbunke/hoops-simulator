@@ -1,15 +1,15 @@
 package hoops_root;
 
 public class Series {
-  private int[] score; // highCede - lowCede
+  private int[] score; // highSeed - lowSeed
   private PlayoffGame[] sequence;
-  private Team highCede;
-  private Team lowCede;
+  private Team highSeed;
+  private Team lowSeed;
   private boolean determined;
 
-  Series(Team highCede, Team lowCede) {
-    this.highCede = highCede;
-    this.lowCede = lowCede;
+  Series(Team highSeed, Team lowSeed) {
+    this.highSeed = highSeed;
+    this.lowSeed = lowSeed;
     this.score = new int[] {0, 0};
     this.sequence = new PlayoffGame[7];
     this.determined = false;
@@ -17,11 +17,11 @@ public class Series {
 
   void adjustScore(Team winner, PlayoffGame game) {
     assert (!determined);
-    assert (winner.equals(highCede) || winner.equals(lowCede));
+    assert (winner.equals(highSeed) || winner.equals(lowSeed));
 
     sequence[score[0] + score[1]] = game;
 
-    if (winner.equals(highCede)) {
+    if (winner.equals(highSeed)) {
       score[0]++;
     } else {
       score[1]++;
@@ -33,9 +33,9 @@ public class Series {
   }
 
   int gamesWon(Team team) {
-    assert (team.equals(highCede) || team.equals(lowCede));
+    assert (team.equals(highSeed) || team.equals(lowSeed));
 
-    if (team.equals(highCede)) {
+    if (team.equals(highSeed)) {
       return score[0];
     }
     return score[1];
@@ -43,17 +43,17 @@ public class Series {
 
   boolean isDetermined() { return determined; }
 
-  Team getHighCede() { return highCede; }
+  Team getHighSeed() { return highSeed; }
 
-  Team getLowCede() { return lowCede; }
+  Team getLowSeed() { return lowSeed; }
 
   Team winner() {
     assert (determined);
 
     if (score[0] == 4) {
-      return highCede;
+      return highSeed;
     }
-    return lowCede;
+    return lowSeed;
   }
 
   void printSeries() {
@@ -75,6 +75,7 @@ public class Series {
 
   @Override
   public String toString() {
-    return highCede.nameAndRecord() + " vs. " + lowCede.nameAndRecord();
+    return highSeed.getSeed() + " " + highSeed.name() + " vs. "
+            + lowSeed.getSeed() + " " + lowSeed.name();
   }
 }
