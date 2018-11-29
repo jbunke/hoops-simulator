@@ -151,6 +151,12 @@ public class Team {
     return new Team(code, name, botTeamRoster);
   }
 
+  void newSeason() {
+    this.record.reset();
+    this.pastGames = new ArrayList<>();
+    this.upcomingGames = new ArrayList<>();
+  }
+
   String code() { return code; }
 
   String name() { return name; }

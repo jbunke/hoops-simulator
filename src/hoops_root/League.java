@@ -161,6 +161,15 @@ public class League {
     simulatePostSeason();
   }
 
+  void newSeason() {
+    year++;
+    gameDaysPlayed = 0;
+    for (Team team : teams) {
+      team.newSeason();
+    }
+    setSchedule(totalGamesPerTeam);
+  }
+
   private void printChampion() {
     System.out.println("The " + year + " " + name + " Champions are the " +
             champion.name() + ".\n");

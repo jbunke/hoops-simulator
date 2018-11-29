@@ -2,8 +2,13 @@ package hoops_root.utilities;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class StatCalculator {
   private static List<String[]> readCSV(String location) {
@@ -27,9 +32,7 @@ public class StatCalculator {
     return stats;
   }
 
-  public static int[] calculate(String location) {
-    List<String[]> table = readCSV(location);
-    int[] stats = new int[11];
+  private static int seasonIndex(List<String[]> table) {
     int seasonsBack = 0;
     boolean foundSeason = false;
 
@@ -47,7 +50,11 @@ public class StatCalculator {
       }
     }
 
-    int index = table.size() - (seasonsBack + 1);
+    return table.size() - (seasonsBack + 1);
+  }
+
+  private static int[] generateStats(List<String[]> table, int index) {
+    int[] stats = new int[11];
 
     // shooting
     float s3ptPerc = 0;
@@ -75,7 +82,7 @@ public class StatCalculator {
 
     // vision
     float pointsToTurnovers = Float.parseFloat(table.get(index)[29]) /
-    Float.parseFloat(table.get(index)[27]);
+            Float.parseFloat(table.get(index)[27]);
     stats[4] = Math.min((int)(5 * pointsToTurnovers) +
             (int)(Math.sqrt(assists) * 15), 99);
 
@@ -121,5 +128,130 @@ public class StatCalculator {
     stats[10] = Math.max(0, Math.min((int)(fouls) - 1, 4));
 
     return stats;
+  }
+
+  public static int[] calculate(String location) {
+    List<String[]> table = readCSV(location);
+    int index = seasonIndex(table);
+    return generateStats(table, index);
+  }
+
+  private static void fileWrite(List<String> stats, String location) {
+    FileWriter writer;
+
+    try {
+      writer = new FileWriter(location, false);
+
+      for (String row : stats) {
+        writer.write(row);
+        writer.write("\n");
+      }
+      writer.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private static void update(URL url, String location) {
+    List<String> stats = new ArrayList<>();
+    URLConnection connection;
+    String line = "";
+
+    try {
+      connection = url.openConnection();
+      Scanner scanner = new Scanner(connection.getInputStream());
+      boolean start = false;
+      boolean done = false;
+      while (!start && scanner.hasNext()) {
+        line = scanner.nextLine();
+        if (line.contains("<div class=\"overthrow table_container\" id=\"div_per_game\">")) {
+          start = true;
+        }
+      }
+      for (int i = 0; i < 4; i++) {
+        // dump
+        scanner.nextLine();
+      }
+      // Headers
+      StringBuilder header = new StringBuilder("");
+      for (int i = 0; i < 30; i++) {
+        if (i != 0) {
+          header.append(",");
+        }
+        line = scanner.nextLine();
+        header.append(
+                line.substring(line.indexOf("\" >") + 3, line.indexOf("</th>")));
+      }
+      stats.add(header.toString());
+      start = false;
+      while (!start) {
+        line = scanner.nextLine();
+        if (line.contains("<tr")) {
+          start = true;
+        }
+      }
+      while (!done) {
+        // ROWS
+        int i = 0;
+        String match = "a";
+        if (line.contains("Career")) {
+          done = true;
+          match = "th";
+          i = 50;
+        }
+        StringBuilder row = new StringBuilder("");
+
+        while (line.contains("</" + match + ">")) {
+          if (!row.toString().equals("")) {
+            row.append(",");
+          }
+          while (line.indexOf("<") != line.indexOf("</" + match + ">")) {
+            line = line.substring(line.indexOf(">") + 1);
+          }
+          row.append(line.substring(0, line.indexOf("</" + match + ">")));
+          line = line.substring(line.indexOf("</" + match + ">") + 3 + match.length());
+          i++;
+          // matcher logic
+          int[] matchers = new int[] {Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE};
+          if (line.contains("</td")) {
+            matchers[0] = line.indexOf("</td");
+          }
+          if (line.contains("</a")) {
+            matchers[1] = line.indexOf("</a");
+          }
+          if (line.contains("</strong")) {
+            matchers[2] = line.indexOf("</strong");
+          }
+          if (matchers[0] <= matchers[1] && matchers[0] <= matchers[2]) {
+            match = "td";
+          } else if (matchers[2] <= matchers[0] && matchers[2] <= matchers[0]) {
+            match = "strong";
+          } else {
+            match = "a";
+          }
+          if (i == 3) { match = "a"; }
+          if (line.indexOf("<" + match) > line.indexOf("</" + match)) {
+            line = line.substring(line.indexOf("</" + match + ">") + 3 + match.length());
+          }
+        }
+
+        stats.add(row.toString());
+        line = scanner.nextLine();
+        if (!line.contains("<tr") && !done) {
+          for (int j = 0; j < 2; j++) {
+            // dump
+            line = scanner.nextLine();
+          }
+        }
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    fileWrite(stats, location);
+  }
+
+  public static int[] updateAndFetch(URL url, String location) {
+    update(url, location);
+    return calculate(location);
   }
 }
