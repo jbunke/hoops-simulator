@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
-  private static final boolean online = false;
+  private static final boolean online = true;
 
   public static void main(String[] args) {
-    Team legends = NBATeams.LEGENDS(online);
+    Team legends = NBATeams.LEGENDS();
     System.out.println(legends.name() + " " + legends.quality());
     List<Team> pacificTeams = new ArrayList<>();
     pacificTeams.add(NBATeams.GSW(online));
