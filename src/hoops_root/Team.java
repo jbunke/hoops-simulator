@@ -11,7 +11,7 @@ public class Team {
   private Record record;
   private int seed;
   private Player[] roster;
-  private Player[] playing;
+  private Player[] starters;
   private List<Game> pastGames;
   private List<Game> upcomingGames;
   private Map<Integer, Player> jerseyNumbers;
@@ -59,10 +59,12 @@ public class Team {
     players.sort(new PositionComparator());
 
     for (Player player : players) {
-      if (available[player.position().index] && assigned < 5) {
-        lineupPriority[assigned] = player.position();
-        available[player.position().index] = false;
-        assigned++;
+      if (player.status() == Player.Status.FIT) {
+        if (available[player.position().index] && assigned < 5) {
+          lineupPriority[assigned] = player.position();
+          available[player.position().index] = false;
+          assigned++;
+        }
       }
     }
     for (int i = 0; i < 5; i++) {
@@ -76,13 +78,14 @@ public class Team {
 
   private void automateLineUp() {
     // PG, SG, PF, SF, C
-    playing = new Player[5];
+    starters = new Player[5];
     List<Player> isPlaying = new ArrayList<>();
 
     for (Position position : lineupPriority) {
       List<Player> players = new ArrayList<>();
       for (Player player : roster) {
-        if (!isPlaying.contains(player)) {
+        if (!isPlaying.contains(player) &&
+                player.status() == Player.Status.FIT) {
           players.add(player);
         }
       }
@@ -106,7 +109,7 @@ public class Team {
           players.sort(new CComparator());
           break;
       }
-      playing[index] = players.get(0);
+      starters[index] = players.get(0);
       isPlaying.add(players.get(0));
     }
   }
@@ -135,12 +138,14 @@ public class Team {
 
   Record getRecord() { return record; }
 
+  Player[] getStarters() { return starters; }
+
   Player[] getRoster() { return roster; }
 
   int quality() {
     int quality = 0;
     for (int i = 0; i < 5; i++) {
-      quality += Player.overall(playing[i], Position.fromIndex(i));
+      quality += Player.overall(starters[i], Position.fromIndex(i));
     }
     return quality / 5;
   }

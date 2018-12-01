@@ -8,6 +8,7 @@ public class Player {
   private final Date birthDate;
   private Team team;
   private int jerseyNumber;
+  private Status status;
 
   // TRAITS
   private Position position;
@@ -20,6 +21,12 @@ public class Player {
   private int stats[];
   private int overall;
 
+  public enum Status {
+    FIT,
+    INJURED,
+    SUSPENDED
+  }
+
   public Player(String[] name, String prefName, Date birthDate) {
     this.name = name;
     this.prefName = prefName;
@@ -30,6 +37,7 @@ public class Player {
     this.jerseyNumber = -1;
     this.height = 70 + (int)(Math.random() * 15);
     this.weight = 155 + ((this.height - 70) * 7) + (int)(Math.random() * 10);
+    this.status = Status.FIT;
     this.stats = new int[] {50 + (int)(Math.random() * 30), // shooting 0 - 99
                             50 + (int)(Math.random() * 30), // rebounding 0 - 99
                             50 + (int)(Math.random() * 30), // athleticism 0 - 99
@@ -56,6 +64,7 @@ public class Player {
     this.jerseyNumber = -1;
     this.height = height;
     this.weight = weight;
+    this.status = Status.FIT;
     this.stats = stats;
     this.overall = Player.overall(this, this.position);
   }
@@ -158,6 +167,8 @@ public class Player {
   }
 
   public Position position() { return position; }
+
+  Status status() { return status; }
 
   String goesBy() {
     return prefName + " " + name[name.length - 1];

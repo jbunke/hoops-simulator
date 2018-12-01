@@ -70,8 +70,6 @@ public class Main {
             western, eastern, 82);
     NBA.printTeamsQuality();
     NBA.simulateSeason();
-    NBA.newSeason();
-    NBA.simulateSeason();
     western.printStandings();
     eastern.printStandings();
   }
