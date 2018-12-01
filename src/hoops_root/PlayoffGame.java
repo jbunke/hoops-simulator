@@ -11,12 +11,10 @@ public class PlayoffGame extends Game {
   @Override
   void randomSim() {
     assert (!played);
-    // TODO - Have to still track points and player stats; OT; ...
+
     if (!series.isDetermined()) {
-      while (score[0] == score[1]) {
-        score[0] = away.quality() + (int)(Math.random() * 50);
-        score[1] = home.quality() + (int)(Math.random() * 50);
-      }
+      sim();
+
       played = true;
       outcome();
     }
@@ -32,6 +30,8 @@ public class PlayoffGame extends Game {
     } else {
       series.adjustScore(home, this);
     }
+
+    saveStats();
 
     away.shiftGameToPast(this);
     home.shiftGameToPast(this);

@@ -2,6 +2,7 @@ package hoops_root;
 
 import hoops_root.traits.Position;
 import hoops_root.traits.positional_comparators.*;
+import hoops_root.utilities.ArrayControl;
 
 import java.util.*;
 
@@ -139,6 +140,8 @@ public class Team {
   Record getRecord() { return record; }
 
   Player[] getStarters() { return starters; }
+
+  Player[] getBench() { return ArrayControl.difference(roster, starters); }
 
   Player[] getRoster() { return roster; }
 

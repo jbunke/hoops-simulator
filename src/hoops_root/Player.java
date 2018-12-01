@@ -2,20 +2,27 @@ package hoops_root;
 
 import hoops_root.traits.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Player {
   private final String[] name;
   private String prefName;
   private final Date birthDate;
   private Team team;
   private int jerseyNumber;
+
+  // OVER TIME
   private Status status;
+  private List<PlayerGameStats> season;
+  private List<List<PlayerGameStats>> pastSeasons;
 
   // TRAITS
   private Position position;
   private DominantHand dominantHand;
   final int prefJerseyNumber;
-  private final int height; // inches
-  private int weight; // pounds
+  final int height; // inches
+  final int weight; // pounds
 
   // STATS
   private int stats[];
@@ -38,15 +45,17 @@ public class Player {
     this.height = 70 + (int)(Math.random() * 15);
     this.weight = 155 + ((this.height - 70) * 7) + (int)(Math.random() * 10);
     this.status = Status.FIT;
-    this.stats = new int[] {50 + (int)(Math.random() * 30), // shooting 0 - 99
-                            50 + (int)(Math.random() * 30), // rebounding 0 - 99
-                            50 + (int)(Math.random() * 30), // athleticism 0 - 99
-                            50 + (int)(Math.random() * 30), // passing 0 - 99
-                            50 + (int)(Math.random() * 30), // vision 0 - 99
-                            50 + (int)(Math.random() * 30), // clutch 0 - 99
-                            50 + (int)(Math.random() * 30), // free throw 0 - 99
-                            50 + (int)(Math.random() * 30), // block 0 - 99
-                            50 + (int)(Math.random() * 30), // driving 0 - 99
+    this.season = new ArrayList<>();
+    this.pastSeasons = new ArrayList<>();
+    this.stats = new int[] {60 + (int)(Math.random() * 30), // shooting 0 - 99
+                            60 + (int)(Math.random() * 30), // rebounding 0 - 99
+                            60 + (int)(Math.random() * 30), // athleticism 0 - 99
+                            60 + (int)(Math.random() * 30), // passing 0 - 99
+                            60 + (int)(Math.random() * 30), // vision 0 - 99
+                            60 + (int)(Math.random() * 30), // clutch 0 - 99
+                            60 + (int)(Math.random() * 30), // free throw 0 - 99
+                            60 + (int)(Math.random() * 30), // block 0 - 99
+                            60 + (int)(Math.random() * 30), // driving 0 - 99
                             2,  // injury-prone 0 - 4
                             2}; // flagrant 0 - 4 (11 stats total)
     this.overall = Player.overall(this, this.position);
@@ -65,6 +74,8 @@ public class Player {
     this.height = height;
     this.weight = weight;
     this.status = Status.FIT;
+    this.season = new ArrayList<>();
+    this.pastSeasons = new ArrayList<>();
     this.stats = stats;
     this.overall = Player.overall(this, this.position);
   }
@@ -75,6 +86,12 @@ public class Player {
 
   void setTeam(Team team) {
     this.team = team;
+  }
+
+  int[] getStats() { return stats; }
+
+  void addToSeasonStats(PlayerGameStats gameStats) {
+    this.season.add(gameStats);
   }
 
   public int overall() { return overall; }

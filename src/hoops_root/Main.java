@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
-  private static final boolean online = true;
+  private static final boolean online = false;
 
   public static void main(String[] args) {
     Team legends = NBATeams.LEGENDS();
