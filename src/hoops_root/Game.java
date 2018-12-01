@@ -123,7 +123,7 @@ public class Game {
     double odds = (int)(Math.random() * 196);
     boolean make = player.getStats()[0] > odds;
 
-    if (odds % 3 == 0) {
+    if (odds % 2 == 0) {
       if (make) {
         scoreBySegment.get(scoreBySegment.size() - 1)[team] += 3;
         if (assist != null) {
@@ -148,9 +148,10 @@ public class Game {
     Player defender = getPlayer(opps, (int)(Math.random() * 5));
 
     // dunk is made if player is better dunker than defender is blocker or if player is more athletic
-    boolean make = (player.height + player.getStats()[7] >
-            defender.height + defender.getStats()[8] ||
-            player.getStats()[2] + (20 * Math.random()) > defender.getStats()[2]);
+    boolean make = (player.height + player.getStats()[8] >
+            defender.height + defender.getStats()[7] ||
+            player.height + player.getStats()[2] + (20 * Math.random()) >
+                    defender.height + defender.getStats()[2]);
     if (make) {
       scoreBySegment.get(scoreBySegment.size() - 1)[team] += 2;
       if (assist != null) {
@@ -161,7 +162,33 @@ public class Game {
     }
     playerStats.get(player).take2P(make);
 
+    if ((1 + defender.getStats()[10]) / 10.0 > Math.random()) {
+      // foul
+      playerStats.get(defender).makeFoul();
+
+      if (make) {
+        freeThrow(player, team, 1);
+      } else {
+        make = freeThrow(player, team, 2);
+      }
+    }
+
     return make;
+  }
+
+  private boolean freeThrow(Player player, int team, int amount) {
+    int taken = 0;
+    boolean made = false;
+    while (taken < amount) {
+      boolean make = (player.getStats()[6] - 6 > Math.random() * 100);
+      if (make) {
+        scoreBySegment.get(scoreBySegment.size() - 1)[team] += 1;
+      }
+      playerStats.get(player).takeFT(make);
+      made = made || make;
+      taken++;
+    }
+    return made;
   }
 
   private void simSegment(int seconds, int team,
@@ -218,11 +245,7 @@ public class Game {
       if (switchPos || clock <= 0) {
         clock = 25;
         team = 1 - team;
-        if (Math.random() < .2) {
-          handler = 0;
-        } else {
-          handler = (int)(Math.random() * 5);
-        }
+        handler = (int)(Math.random() * 5);
         assist = null;
         switchPos = false;
       }
@@ -260,7 +283,7 @@ public class Game {
     }
   }
 
-  void randomSim() {
+  void simulate() {
     assert (!played);
 
     sim();
@@ -292,6 +315,7 @@ public class Game {
 
     for (Player player : played) {
       player.addToSeasonStats(playerStats.get(player));
+      player.statUpdate();
     }
   }
 
@@ -306,6 +330,94 @@ public class Game {
     return home;
   }
   */
+
+  private void printXTimes(String msg, int x) {
+    for (int i = 0; i < x; i++) {
+      System.out.print(msg);
+    }
+  }
+
+  private void printRow(String[] sections, int[] spaces) {
+    assert (sections.length == spaces.length);
+    for (int i = 0; i < sections.length; i++) {
+      System.out.print(sections[i]);
+      printXTimes(" ", spaces[i] - sections[i].length());
+      System.out.print("|");
+    }
+
+    System.out.println();
+  }
+
+  private void teamBoxScore(Team team) {
+    System.out.println(team.name());
+    printRow(new String[] {"PLAYER", "MIN", "FG", "3PT", "FT",
+                    "REB", "AST", "BLK", "FLS", "PTS"},
+            new int[] {22, 5, 6, 6, 6, 3, 3, 3, 3, 3});
+    for (Player player : team.getRoster()) {
+      if (playerStats.containsKey(player)) {
+        PlayerGameStats plStats = playerStats.get(player);
+        printRow(new String[] {player.goesBy(), String.valueOf(plStats.mins()),plStats.FG(),
+                        plStats.THREE(), plStats.FT(), String.valueOf(plStats.getRebounds()),
+                        String.valueOf(plStats.getAssists()), String.valueOf(plStats.getBlocks()),
+                        String.valueOf(plStats.getFouls()), String.valueOf(plStats.getPoints())},
+                new int[] {22, 5, 6, 6, 6, 3, 3, 3, 3, 3});
+      } else {
+        if (player.status() == Player.Status.INJURED) {
+          System.out.println("INJURED - DID NOT PLAY");
+        } else if (player.status() == Player.Status.SUSPENDED) {
+          System.out.println("SUSPENDED");
+        } else {
+          System.out.println();
+        }
+      }
+    }
+  }
+
+  private void printScore() {
+    String[] header = new String[scoreBySegment.size() + 2];
+    header[0] = "";
+    header[1] = "1";
+    header[2] = "2";
+    header[3] = "3";
+    header[4] = "4";
+    for (int i = 4; i < scoreBySegment.size(); i++) {
+      header[i + 1] = "OT" + String.valueOf(i - 3);
+    }
+    header[header.length - 1] = "T";
+    int[] spaces = new int[header.length];
+    for (int i = 0; i < spaces.length; i++) {
+      spaces[i] = 3;
+    }
+    printRow(header, spaces);
+
+    String[] awayScores = new String[header.length];
+    awayScores[0] = away.code();
+    awayScores[awayScores.length - 1] = String.valueOf(score[0]);
+    String[] homeScores = new String[header.length];
+    homeScores[0] = home.code();
+    homeScores[homeScores.length - 1] = String.valueOf(score[1]);
+
+    for (int i = 0; i < scoreBySegment.size(); i++) {
+      awayScores[i + 1] = String.valueOf(scoreBySegment.get(i)[0]);
+      homeScores[i + 1] = String.valueOf(scoreBySegment.get(i)[1]);
+    }
+
+    printRow(awayScores, spaces);
+    printRow(homeScores, spaces);
+  }
+
+  void printBoxScore() {
+    assert (played);
+    System.out.println("Box Score:\n");
+    printXTimes("-", 10);
+    System.out.println();
+
+    teamBoxScore(away);
+    teamBoxScore(home);
+
+    System.out.println();
+    printScore();
+  }
 
   @Override
   public String toString() {

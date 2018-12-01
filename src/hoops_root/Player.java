@@ -17,6 +17,14 @@ public class Player {
   private List<PlayerGameStats> season;
   private List<List<PlayerGameStats>> pastSeasons;
 
+  private double PPG = 0.0;
+  private double ASTPG = 0.0;
+  private double REBPG = 0.0;
+  private double BLKPG = 0.0;
+  private int PTS = 0;
+  private double FLSPG = 0.0;
+  private double THREEPERC = 0.0;
+
   // TRAITS
   private Position position;
   private DominantHand dominantHand;
@@ -47,15 +55,15 @@ public class Player {
     this.status = Status.FIT;
     this.season = new ArrayList<>();
     this.pastSeasons = new ArrayList<>();
-    this.stats = new int[] {60 + (int)(Math.random() * 30), // shooting 0 - 99
-                            60 + (int)(Math.random() * 30), // rebounding 0 - 99
-                            60 + (int)(Math.random() * 30), // athleticism 0 - 99
-                            60 + (int)(Math.random() * 30), // passing 0 - 99
-                            60 + (int)(Math.random() * 30), // vision 0 - 99
-                            60 + (int)(Math.random() * 30), // clutch 0 - 99
-                            60 + (int)(Math.random() * 30), // free throw 0 - 99
-                            60 + (int)(Math.random() * 30), // block 0 - 99
-                            60 + (int)(Math.random() * 30), // driving 0 - 99
+    this.stats = new int[] {50 + (int)(Math.random() * 30), // shooting 0 - 99
+                            50 + (int)(Math.random() * 30), // rebounding 0 - 99
+                            50 + (int)(Math.random() * 30), // athleticism 0 - 99
+                            50 + (int)(Math.random() * 30), // passing 0 - 99
+                            50 + (int)(Math.random() * 30), // vision 0 - 99
+                            50 + (int)(Math.random() * 30), // clutch 0 - 99
+                            50 + (int)(Math.random() * 30), // free throw 0 - 99
+                            50 + (int)(Math.random() * 30), // block 0 - 99
+                            50 + (int)(Math.random() * 30), // driving 0 - 99
                             2,  // injury-prone 0 - 4
                             2}; // flagrant 0 - 4 (11 stats total)
     this.overall = Player.overall(this, this.position);
@@ -92,6 +100,61 @@ public class Player {
 
   void addToSeasonStats(PlayerGameStats gameStats) {
     this.season.add(gameStats);
+  }
+
+  void statUpdate() {
+    double gamesPlayed = (double)season.size();
+    int points = 0;
+    int assists = 0;
+    int rebounds = 0;
+    int blocks = 0;
+    int fouls = 0;
+    int threes = 0;
+    int threesAttempted = 0;
+    for (PlayerGameStats gameStats : season) {
+      points += gameStats.getPoints();
+      assists += gameStats.getAssists();
+      rebounds += gameStats.getRebounds();
+      blocks += gameStats.getBlocks();
+      fouls += gameStats.getFouls();
+      threes += gameStats.getT3fieldGoals();
+      threesAttempted += gameStats.getT3fieldGoalAttempts();
+    }
+    PPG = points / gamesPlayed;
+    PTS = points;
+    ASTPG = assists / gamesPlayed;
+    REBPG = rebounds / gamesPlayed;
+    BLKPG = blocks / gamesPlayed;
+    FLSPG = fouls / gamesPlayed;
+    THREEPERC = threes / (double)threesAttempted;
+  }
+
+  public double getPPG() {
+    return PPG;
+  }
+
+  public int getPTS() {
+    return PTS;
+  }
+
+  public double getASTPG() {
+    return ASTPG;
+  }
+
+  public double getBLKPG() {
+    return BLKPG;
+  }
+
+  public double getREBPG() {
+    return REBPG;
+  }
+
+  public double getFLSPG() {
+    return FLSPG;
+  }
+
+  public double getTHREEPERC() {
+    return THREEPERC;
   }
 
   public int overall() { return overall; }

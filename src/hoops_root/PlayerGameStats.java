@@ -93,8 +93,56 @@ class PlayerGameStats {
     blocks++;
   }
 
+  void makeFoul() {
+    personalFouls++;
+  }
+
   @Override
   public String toString() {
-    return player.goesBy() + ": " + points + " PTS, " + assists + " ASTS, " + rebounds + " RBS";
+    return player.goesBy() + ": " + points + " PTS, " + assists + " AST, " + rebounds + " REB";
+  }
+
+  int mins() {
+    return minutes;
+  }
+
+  String FG() {
+    return fieldGoals + "-" + fieldGoalAttempts;
+  }
+
+  String THREE() {
+    return t3fieldGoals + "-" + t3fieldGoalAttempts;
+  }
+
+  String FT() {
+    return freeThrows + "-" + freeThrowAttempts;
+  }
+
+  int getRebounds() {
+    return rebounds;
+  }
+
+  int getAssists() {
+    return assists;
+  }
+
+  int getBlocks() {
+    return blocks;
+  }
+
+  int getPoints() {
+    return points;
+  }
+
+  int getFouls() {
+    return personalFouls;
+  }
+
+  int getT3fieldGoals() {
+    return t3fieldGoals;
+  }
+
+  int getT3fieldGoalAttempts() {
+    return t3fieldGoalAttempts;
   }
 }

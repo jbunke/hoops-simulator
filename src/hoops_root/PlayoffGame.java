@@ -9,7 +9,7 @@ public class PlayoffGame extends Game {
   }
 
   @Override
-  void randomSim() {
+  void simulate() {
     assert (!played);
 
     if (!series.isDetermined()) {

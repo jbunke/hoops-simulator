@@ -46,6 +46,10 @@ public class League {
     setSchedule(totalGamesPerTeam);
   }
 
+  List<Player> getPlayers() {
+    return players;
+  }
+
   private void setSchedule(int totalGamesPerTeam) {
     this.schedule = new ArrayList<>();
     int gameDays = 0;
@@ -61,7 +65,7 @@ public class League {
 
   private void simulateGameDay() {
     for (Game game : schedule.get(gameDaysPlayed)) {
-      game.randomSim();
+      game.simulate();
     }
     conferences[0].updateStandings();
     conferences[1].updateStandings();
@@ -71,7 +75,7 @@ public class League {
   private void simulatePlayoffSeries() {
     for (PlayoffGame[] gameNum : playoffSchedule) {
       for (PlayoffGame game : gameNum) {
-        game.randomSim();
+        game.simulate();
       }
     }
   }
@@ -82,7 +86,7 @@ public class League {
     }
   }
 
-  private void simulateRegularSeason() {
+  void simulateRegularSeason() {
     if (gameDaysPlayed != 0) {
       setSchedule(totalGamesPerTeam);
     }

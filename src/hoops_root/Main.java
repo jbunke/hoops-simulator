@@ -1,6 +1,7 @@
 package hoops_root;
 
 import hoops_root.NBA.NBATeams;
+import hoops_root.stats.statistical_comparators.StatComparator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,9 +69,20 @@ public class Main {
 
     League NBA = new League("National Basketball Association", 2019,
             western, eastern, 82);
-    NBA.printTeamsQuality();
-    NBA.simulateSeason();
+    // NBA.printTeamsQuality();
+    NBA.simulateRegularSeason();
     western.printStandings();
     eastern.printStandings();
+    List<Player> players = NBA.getPlayers();
+    players.sort(new StatComparator(StatComparator.Stat.PPG));
+    players.sort(new StatComparator(StatComparator.Stat.ASTPG));
+    players.sort(new StatComparator(StatComparator.Stat.REBPG));
+    players.sort(new StatComparator(StatComparator.Stat.BLKPG));
+    players.sort(new StatComparator(StatComparator.Stat.FLSPG));
+    players.sort(new StatComparator(StatComparator.Stat.PTS));
+    players.sort(new StatComparator(StatComparator.Stat.THREEPERC));
+    Game faceOff = new Game(NBATeams.GUARDS(), NBATeams.GSW(false));
+    faceOff.simulate();
+    faceOff.printBoxScore();
   }
 }

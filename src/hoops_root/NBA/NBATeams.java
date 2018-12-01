@@ -134,6 +134,40 @@ public class NBATeams {
     return new Team("TOR", "Toronto Raptors", roster);
   }
 
+  public static Team GUARDS() {
+    // s, r, a, p, v, c, f, b, d
+    Player[] roster = new Player[12];
+    try {
+      roster[0] = NBAPlayers.getPlayer("Michael Jordan", false);
+      roster[1] = NBAPlayers.getPlayer("Steph Curry", false);
+      roster[2] = NBAPlayers.getPlayer("James Harden", false);
+      roster[3] = NBAPlayers.getPlayer("Derrick Rose", false);
+      roster[4] = NBAPlayers.getPlayer("Kyrie Irving", false);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    printRoster(roster);
+    roster = botsFrom(5, roster);
+    return new Team("GUA", "NBA Guards", roster);
+  }
+
+  public static Team FORWARDS() {
+    // s, r, a, p, v, c, f, b, d
+    Player[] roster = new Player[12];
+    try {
+      roster[0] = NBAPlayers.getPlayer("Joel Embiid", false);
+      roster[1] = NBAPlayers.getPlayer("Giannis Antetokounmpo", false);
+      roster[2] = NBAPlayers.getPlayer("Kareem Abdul-Jabbar", false);
+      roster[3] = NBAPlayers.getPlayer("DeMarcus Cousins", false);
+      roster[4] = NBAPlayers.getPlayer("Al Horford", false);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    printRoster(roster);
+    roster = botsFrom(5, roster);
+    return new Team("FOR", "NBA Forwards", roster);
+  }
+
   public static Team LEGENDS() {
     // s, r, a, p, v, c, f, b, d
     Player[] roster = new Player[12];
