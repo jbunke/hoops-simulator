@@ -1,11 +1,13 @@
 package hoops_root.utilities;
 
+import hoops_root.Player;
+
 public class ArrayControl {
-  public static <T> T[] difference(T[] from, T[] without) {
+  public static Player[] playerDifference(Player[] from, Player[] without) {
     int occurrences = 0;
     boolean[] matched = new boolean[from.length];
     for (int i = 0; i < from.length; i++) {
-      for (T u : without) {
+      for (Player u : without) {
         if (from[i].equals(u)) {
           occurrences++;
           matched[i] = true;
@@ -14,7 +16,7 @@ public class ArrayControl {
       }
     }
 
-    Object[] differences = new Object[from.length - occurrences];
+    Player[] differences = new Player[from.length - occurrences];
     int inserted = 0;
     for (int i = 0; i < from.length; i++) {
       if (!matched[i]) {
@@ -22,6 +24,6 @@ public class ArrayControl {
         inserted++;
       }
     }
-    return (T[])(differences);
+    return differences;
   }
 }

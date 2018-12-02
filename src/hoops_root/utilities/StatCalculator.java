@@ -245,11 +245,8 @@ public class StatCalculator {
 
         stats.add(row.toString());
         line = scanner.nextLine();
-        if (!line.contains("<tr") && !done) {
-          for (int j = 0; j < 2; j++) {
-            // dump
-            line = scanner.nextLine();
-          }
+        while (!done && !(line.contains("<tr") || line.contains("<strong"))) {
+          line = scanner.nextLine();
         }
       }
     } catch (IOException e) {

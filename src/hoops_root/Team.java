@@ -53,6 +53,24 @@ public class Team {
     automateLineUp();
   }
 
+  private void replenishBench() {
+    Player[] bench = getBench();
+
+    for (Player player : bench) {
+      player.replenishEnergy();
+    }
+  }
+
+  Player[] substitutions() {
+    // replenish energy
+    replenishBench();
+
+    // reassemble lineup
+    priorityByQuality();
+    automateLineUp();
+    return starters;
+  }
+
   private void priorityByQuality() {
     boolean[] available = new boolean[] { true, true, true, true, true };
     int assigned = 0;
@@ -141,7 +159,7 @@ public class Team {
 
   Player[] getStarters() { return starters; }
 
-  Player[] getBench() { return ArrayControl.difference(roster, starters); }
+  Player[] getBench() { return ArrayControl.playerDifference(roster, starters); }
 
   Player[] getRoster() { return roster; }
 

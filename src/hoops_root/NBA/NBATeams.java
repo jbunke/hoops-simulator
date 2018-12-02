@@ -20,6 +20,19 @@ public class NBATeams {
     return new Team("BOS", "Boston Celtics", roster);
   }
 
+
+  public static Team DAL(boolean online) {
+    // s, r, a, p, v, c, f, b, d
+    Player[] roster = new Player[12];
+
+    roster[0] = NBAPlayers.getPlayer("Luka Doncic", online);
+
+    printRoster(roster);
+    roster = botsFrom(1, roster);
+    return new Team("DAL", "Dallas Mavericks", roster);
+  }
+
+
   public static Team GSW(boolean online) {
     // s, r, a, p, v, c, f, b, d
     Player[] roster = new Player[12];
@@ -69,9 +82,11 @@ public class NBATeams {
     Player[] roster = new Player[12];
 
     roster[0] = NBAPlayers.getPlayer("Giannis Antetokounmpo", online);
+    roster[1] = NBAPlayers.getPlayer("Eric Bledsoe", online);
+    roster[2] = NBAPlayers.getPlayer("Khris Middleton", online);
 
     printRoster(roster);
-    roster = botsFrom(1, roster);
+    roster = botsFrom(3, roster);
     return new Team("MIL", "Milwaukee Bucks", roster);
   }
 
@@ -85,6 +100,17 @@ public class NBATeams {
     printRoster(roster);
     roster = botsFrom(2, roster);
     return new Team("MIN", "Minnesota Timberwolves", roster);
+  }
+
+  public static Team NYK(boolean online) {
+    // s, r, a, p, v, c, f, b, d
+    Player[] roster = new Player[12];
+
+    roster[0] = NBAPlayers.getPlayer("Kristaps Porzingis", online);
+
+    printRoster(roster);
+    roster = botsFrom(1, roster);
+    return new Team("NYK", "New York Knicks", roster);
   }
 
   public static Team OKC(boolean online) {
@@ -101,6 +127,19 @@ public class NBATeams {
     printRoster(roster);
     roster = botsFrom(3, roster);
     return new Team("OKC", "Oklahoma City Thunder", roster);
+  }
+
+  public static Team POR(boolean online) {
+    // s, r, a, p, v, c, f, b, d
+    Player[] roster = new Player[12];
+
+    roster[0] = NBAPlayers.getPlayer("Damian Lillard", online);
+    roster[1] = NBAPlayers.getPlayer("CJ McCollum", online);
+    roster[2] = NBAPlayers.getPlayer("Seth Curry", online);
+
+    printRoster(roster);
+    roster = botsFrom(3, roster);
+    return new Team("POR", "Portland Trail Blazers", roster);
   }
 
   public static Team PHI(boolean online) {
@@ -192,7 +231,7 @@ public class NBATeams {
     roster[0] = NBAPlayers.getPlayer("shell", online);
 
     printRoster(roster);
-    roster = botsFrom(0, roster);
+    roster = botsFrom(1, roster);
     return new Team("SHL", "shell", roster);
   }
 

@@ -10,8 +10,6 @@ public class Main {
   private static final boolean online = false;
 
   public static void main(String[] args) {
-    Team legends = NBATeams.LEGENDS();
-    System.out.println(legends.name() + " " + legends.quality());
     List<Team> pacificTeams = new ArrayList<>();
     pacificTeams.add(NBATeams.GSW(online));
     pacificTeams.add(Team.botTeam("LAC", "Los Angeles Clippers"));
@@ -24,7 +22,7 @@ public class Main {
     List<Team> southwestTeams = new ArrayList<>();
     southwestTeams.add(Team.botTeam("MEM", "Memphis Grizzlies"));
     southwestTeams.add(Team.botTeam("NOP", "New Orleans Pelicans"));
-    southwestTeams.add(Team.botTeam("DAL", "Dallas Mavericks"));
+    southwestTeams.add(NBATeams.DAL(online));
     southwestTeams.add(NBATeams.HOU(online));
     southwestTeams.add(Team.botTeam("SAS", "San Antonio Spurs"));
     Division southwest = new Division("Southwest", southwestTeams);
@@ -32,7 +30,7 @@ public class Main {
     List<Team> northwestTeams = new ArrayList<>();
     northwestTeams.add(Team.botTeam("DEN", "Denver Nuggets"));
     northwestTeams.add(NBATeams.OKC(online));
-    northwestTeams.add(Team.botTeam("POR", "Portland Trailblazers"));
+    northwestTeams.add(NBATeams.POR(online));
     northwestTeams.add(NBATeams.MIN(online));
     northwestTeams.add(Team.botTeam("UTA", "Utah Jazz"));
     Division northwest = new Division("Northwest", northwestTeams);
@@ -45,7 +43,7 @@ public class Main {
     atlanticTeams.add(NBATeams.PHI(online));
     atlanticTeams.add(NBATeams.BOS(online));
     atlanticTeams.add(Team.botTeam("BRK", "Brooklyn Nets"));
-    atlanticTeams.add(Team.botTeam("NYK", "New York Knicks"));
+    atlanticTeams.add(NBATeams.NYK(online));
     Division atlantic = new Division("Atlantic", atlanticTeams);
 
     List<Team> centralTeams = new ArrayList<>();
@@ -73,15 +71,12 @@ public class Main {
     NBA.simulateRegularSeason();
     western.printStandings();
     eastern.printStandings();
-    List<Player> players = NBA.getPlayers();
-    players.sort(new StatComparator(StatComparator.Stat.PPG));
-    players.sort(new StatComparator(StatComparator.Stat.ASTPG));
-    players.sort(new StatComparator(StatComparator.Stat.REBPG));
-    players.sort(new StatComparator(StatComparator.Stat.BLKPG));
-    players.sort(new StatComparator(StatComparator.Stat.FLSPG));
-    players.sort(new StatComparator(StatComparator.Stat.PTS));
-    players.sort(new StatComparator(StatComparator.Stat.THREEPERC));
-    Game faceOff = new Game(NBATeams.GUARDS(), NBATeams.GSW(false));
+    NBA.printLeaders(StatComparator.Stat.PPG, Player::getPPG, "Points");
+    NBA.printLeaders(StatComparator.Stat.ASTPG, Player::getASTPG, "Assists");
+    NBA.printLeaders(StatComparator.Stat.REBPG, Player::getREBPG, "Rebounds");
+    NBA.printLeaders(StatComparator.Stat.THREE, Player::getTHREE, "Three-Point");
+    NBA.printLeaders(StatComparator.Stat.MINPG, Player::getMINPG, "Minutes");
+    Game faceOff = new Game(NBATeams.POR(false), NBATeams.OKC(false));
     faceOff.simulate();
     faceOff.printBoxScore();
   }

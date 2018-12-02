@@ -25,8 +25,8 @@ public class Game {
     this.score = new int[] {0, 0};
     this.scoreBySegment = new ArrayList<>();
     this.playerStats = new HashMap<>();
-    this.awayPlaying = away.getStarters();
-    this.homePlaying = home.getStarters();
+    this.awayPlaying = away.substitutions();
+    this.homePlaying = home.substitutions();
     this.played = false;
 
     away.addGameToSchedule(this);
@@ -35,14 +35,20 @@ public class Game {
 
   private void initializeStats() {
     for (Player a : away.getRoster()) {
-      if (a.status() == Player.Status.FIT) {
+      if (a.status() == Player.Status.FIT
+              || a.status() == Player.Status.FATIGUED) {
         playerStats.put(a, PlayerGameStats.startGame(a, date));
       }
     }
     for (Player h : home.getRoster()) {
-      if (h.status() == Player.Status.FIT) {
+      if (h.status() == Player.Status.FIT
+              || h.status() == Player.Status.FATIGUED) {
         playerStats.put(h, PlayerGameStats.startGame(h, date));
       }
+    }
+
+    if (playerStats.size() != 24) {
+      System.out.print("PANIC");
     }
   }
 
@@ -92,6 +98,39 @@ public class Game {
       return awayPlaying[handler];
     }
     return homePlaying[handler];
+  }
+
+  private int alleyOopTeammate(int team, int handler) {
+    Player[] candidates = new Player[4];
+    int[] indices = new int[4];
+    int inserted = 0;
+    Player[] alleyOopTeam;
+    if (team == 0) {
+      alleyOopTeam = awayPlaying;
+    } else {
+      alleyOopTeam = homePlaying;
+    }
+    for (int i = 0; i < 5; i++) {
+      if (i != handler) {
+        candidates[inserted] = alleyOopTeam[i];
+        indices[inserted] = i;
+        inserted++;
+      }
+    }
+    int totalVision = 0;
+    int[] thresholds = new int[] {candidates[0].getStats()[4],
+            candidates[0].getStats()[4] + candidates[1].getStats()[4],
+            candidates[0].getStats()[4] + candidates[1].getStats()[4] + candidates[2].getStats()[4]};
+    for (Player candidate : candidates) {
+      totalVision += candidate.getStats()[4];
+    }
+    int seed = (int)(Math.random() * totalVision);
+    for (int i = 0; i < 3; i++) {
+      if (seed < thresholds[i]) {
+        return indices[i];
+      }
+    }
+    return indices[3];
   }
 
   private int rebound(int def) {
@@ -148,10 +187,10 @@ public class Game {
     Player defender = getPlayer(opps, (int)(Math.random() * 5));
 
     // dunk is made if player is better dunker than defender is blocker or if player is more athletic
-    boolean make = (player.height + player.getStats()[8] >
-            defender.height + defender.getStats()[7] ||
+    boolean make = (player.height + player.getStats()[8] + (20 * Math.random()) >
+            defender.height + defender.getStats()[7] + (20 * Math.random()) ||
             player.height + player.getStats()[2] + (20 * Math.random()) >
-                    defender.height + defender.getStats()[2]);
+                    defender.height + defender.getStats()[2] + (20 * Math.random()));
     if (make) {
       scoreBySegment.get(scoreBySegment.size() - 1)[team] += 2;
       if (assist != null) {
@@ -165,6 +204,15 @@ public class Game {
     if ((1 + defender.getStats()[10]) / 10.0 > Math.random()) {
       // foul
       playerStats.get(defender).makeFoul();
+      if (playerStats.get(defender).getFouls() == 6) {
+        // TODO: foul out
+        defender.setStatus(Player.Status.FOULED_OUT);
+        if (opps == 0) {
+          awayPlaying = away.substitutions();
+        } else {
+          homePlaying = home.substitutions();
+        }
+      }
 
       if (make) {
         freeThrow(player, team, 1);
@@ -174,6 +222,23 @@ public class Game {
     }
 
     return make;
+  }
+
+  private boolean pass(Player player, int team) {
+    int opps = 1 - team;
+    Player defender = getPlayer(opps, (int)(Math.random() * 5));
+
+    // pass can be intercepted
+    boolean make = (
+            player.getStats()[3] + (40 * Math.random()) >
+            defender.getStats()[4] + (10 * Math.random()));
+    if (!make) {
+      playerStats.get(defender).makeSteal();
+      playerStats.get(player).makeTurnover();
+    }
+
+    // return !make because if the pass is made, possession does NOT switch
+    return !make;
   }
 
   private boolean freeThrow(Player player, int team, int amount) {
@@ -194,12 +259,12 @@ public class Game {
   private void simSegment(int seconds, int team,
                   int handler) {
     int clock = 25;
-    boolean switchPos = false;
+    boolean switchPos;
     Player assist = null;
     while (seconds > 0) {
       // a play
       Player hasBall = getPlayer(team, handler);
-      int time = 5 + (int)(6 * Math.random());
+      int time = 5 + (int)(7 * Math.random());
       // TODO: clutch ??
       if (clock < time) {
         if (hasBall.getStats()[8] > hasBall.getStats()[0] &&
@@ -217,8 +282,9 @@ public class Game {
         // pass, shoot, or drive
         double decision = Math.random();
 
-        double tShoot = Math.pow(hasBall.getStats()[0], 2) / 50000.0;
+        double tShoot = Math.pow(hasBall.getStats()[0], 2) / 30000.0;
         double tDrive = tShoot + (hasBall.getStats()[8] / 500.0);
+        double tAlleyOop = tDrive + (hasBall.getStats()[3] / 1000.0);
 
         if (decision < tShoot) {
           switchPos = shoot(hasBall, team, assist);
@@ -229,6 +295,21 @@ public class Game {
           }
         } else if (decision < tDrive) {
           switchPos = drive(hasBall, team, assist);
+          if (!switchPos) {
+            int newTeam = rebound(1 - team);
+            switchPos = newTeam != team;
+            handler = (int)(Math.random() * 5);
+          }
+        } else if (decision < tAlleyOop) {
+          // alley-oop
+          handler = alleyOopTeammate(team, handler);
+          assist = hasBall;
+          switchPos = drive(getPlayer(team, handler), team, assist);
+          if (!switchPos) {
+            int newTeam = rebound(1 - team);
+            switchPos = newTeam != team;
+            handler = (int)(Math.random() * 5);
+          }
         } else {
           // pass
           int passTo = handler;
@@ -237,7 +318,22 @@ public class Game {
           }
           assist = hasBall;
           handler = passTo;
+          // pass can be intercepted and a steal and turnover is logged
+          switchPos = pass(hasBall, team);
         }
+      }
+
+      // MINUTE PASSED, STAT UPDATE
+      if (seconds % 60 < 30 && (seconds - time) % 60 > 30) {
+        for (Player a : awayPlaying) {
+          playerStats.get(a).playMinute();
+        }
+        for (Player h : homePlaying) {
+          playerStats.get(h).playMinute();
+        }
+        // substitute players based on fatigue
+        awayPlaying = away.substitutions();
+        homePlaying = home.substitutions();
       }
 
       clock -= time;
@@ -247,7 +343,6 @@ public class Game {
         team = 1 - team;
         handler = (int)(Math.random() * 5);
         assist = null;
-        switchPos = false;
       }
     }
   }
@@ -257,8 +352,8 @@ public class Game {
     // initialize stats map
     initializeStats();
     // get starters and bench
-    awayPlaying = away.getStarters();
-    homePlaying = home.getStarters();
+    awayPlaying = away.substitutions();
+    homePlaying = home.substitutions();
     assert (awayPlaying.length == 5 && homePlaying.length == 5);
 
     // start game
@@ -316,6 +411,10 @@ public class Game {
     for (Player player : played) {
       player.addToSeasonStats(playerStats.get(player));
       player.statUpdate();
+
+      if (player.status() == Player.Status.FOULED_OUT) {
+        player.unfoul();
+      }
     }
   }
 
@@ -350,17 +449,46 @@ public class Game {
 
   private void teamBoxScore(Team team) {
     System.out.println(team.name());
+    printXTimes("-", 78);
+    System.out.println();
     printRow(new String[] {"PLAYER", "MIN", "FG", "3PT", "FT",
-                    "REB", "AST", "BLK", "FLS", "PTS"},
-            new int[] {22, 5, 6, 6, 6, 3, 3, 3, 3, 3});
+                    "REB", "AST", "BLK", "STL", "TOV", "FLS", "PTS"},
+            new int[] {22, 5, 6, 6, 6, 3, 3, 3, 3, 3, 3, 3});
+    int teamFG = 0;
+    int teamFGA = 0;
+    int team3P = 0;
+    int team3PA = 0;
+    int teamFT = 0;
+    int teamFTA = 0;
+    int teamREB = 0;
+    int teamAST = 0;
+    int teamBLK = 0;
+    int teamSTL = 0;
+    int teamTOV = 0;
+    int teamFLS = 0;
+    int teamPTS = 0;
     for (Player player : team.getRoster()) {
       if (playerStats.containsKey(player)) {
         PlayerGameStats plStats = playerStats.get(player);
-        printRow(new String[] {player.goesBy(), String.valueOf(plStats.mins()),plStats.FG(),
+        printRow(new String[] {player.goesBy(), String.valueOf(plStats.mins()), plStats.FG(),
                         plStats.THREE(), plStats.FT(), String.valueOf(plStats.getRebounds()),
                         String.valueOf(plStats.getAssists()), String.valueOf(plStats.getBlocks()),
+                        String.valueOf(plStats.getSteals()), String.valueOf(plStats.getTurnovers()),
                         String.valueOf(plStats.getFouls()), String.valueOf(plStats.getPoints())},
-                new int[] {22, 5, 6, 6, 6, 3, 3, 3, 3, 3});
+                new int[] {22, 5, 6, 6, 6, 3, 3, 3, 3, 3, 3, 3});
+        teamFG += plStats.getFieldGoals();
+        teamFGA += plStats.getFieldGoalAttempts();
+        team3P += plStats.getT3fieldGoals();
+        team3PA += plStats.getT3fieldGoalAttempts();
+        teamFT += plStats.getFreeThrows();
+        teamFTA += plStats.getFreeThrowAttempts();
+        teamREB += plStats.getRebounds();
+        teamAST += plStats.getAssists();
+        teamBLK += plStats.getBlocks();
+        teamSTL += plStats.getSteals();
+        teamTOV += plStats.getTurnovers();
+        teamFLS += plStats.getFouls();
+        teamPTS += plStats.getPoints();
       } else {
         if (player.status() == Player.Status.INJURED) {
           System.out.println("INJURED - DID NOT PLAY");
@@ -371,6 +499,15 @@ public class Game {
         }
       }
     }
+    printRow(new String[] {"TEAM", "N/A", teamFG + "-" + teamFGA,
+                    team3P + "-" + team3PA, teamFT + "-" + teamFTA,
+                    String.valueOf(teamREB), String.valueOf(teamAST),
+                    String.valueOf(teamBLK), String.valueOf(teamSTL),
+                    String.valueOf(teamTOV), String.valueOf(teamFLS),
+                    String.valueOf(teamPTS)},
+            new int[] {22, 5, 6, 6, 6, 3, 3, 3, 3, 3, 3, 3});
+    printXTimes("-", 78);
+    System.out.println();
   }
 
   private void printScore() {
@@ -408,7 +545,7 @@ public class Game {
 
   void printBoxScore() {
     assert (played);
-    System.out.println("Box Score:\n");
+    System.out.println("Box Score:");
     printXTimes("-", 10);
     System.out.println();
 

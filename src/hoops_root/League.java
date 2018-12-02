@@ -1,7 +1,10 @@
 package hoops_root;
 
+import hoops_root.stats.statistical_comparators.StatComparator;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class League {
   private String name;
@@ -192,6 +195,16 @@ public class League {
   void printTeamsQuality() {
     for (Team team : teams) {
       System.out.println(team.name() + " " + team.quality());
+    }
+    System.out.println();
+  }
+
+  void printLeaders(StatComparator.Stat stat, Function<Player, Number> function,
+                    String category) {
+    System.out.println(category + " Leaders:");
+    players.sort(new StatComparator(stat));
+    for (int i = 0; i < 10; i++) {
+      System.out.println(players.get(i).goesBy() + ": " + function.apply(players.get(i)));
     }
     System.out.println();
   }

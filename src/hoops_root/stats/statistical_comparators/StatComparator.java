@@ -17,8 +17,12 @@ public class StatComparator implements Comparator<Player> {
     REBPG,
     BLKPG,
     FLSPG,
+    STLPG,
+    TOVPG,
+    MINPG,
     PTS,
-    THREEPERC
+    THREEPERC,
+    THREE
   }
 
   @Override
@@ -34,8 +38,16 @@ public class StatComparator implements Comparator<Player> {
         return (int)Math.signum(b.getASTPG() - a.getASTPG());
       case FLSPG:
         return (int)Math.signum(b.getFLSPG() - a.getFLSPG());
+      case STLPG:
+        return (int)Math.signum(b.getSTLPG() - a.getSTLPG());
+      case TOVPG:
+        return (int)Math.signum(b.getTOVPG() - a.getTOVPG());
+      case MINPG:
+        return (int)Math.signum(b.getMINPG() - a.getMINPG());
       case THREEPERC:
         return (int)Math.signum(b.getTHREEPERC() - a.getTHREEPERC());
+      case THREE:
+        return (int)Math.signum(b.getTHREE() - a.getTHREE());
       case BLKPG:
       default:
         return (int)Math.signum(b.getBLKPG() - a.getBLKPG());

@@ -53,6 +53,11 @@ class PlayerGameStats {
     this.points = 0;
   }
 
+  void playMinute() {
+    minutes++;
+    player.dropEnergy();
+  }
+
   void takeFT(boolean make) {
     freeThrowAttempts++;
     if (make) {
@@ -69,6 +74,7 @@ class PlayerGameStats {
       fieldGoals++;
       points += 2;
     }
+    player.dropEnergy();
   }
 
   void take3P(boolean make) {
@@ -87,11 +93,20 @@ class PlayerGameStats {
 
   void makeRebound() {
     rebounds++;
+    player.dropEnergy();
   }
 
   void makeBlock() {
     blocks++;
+    player.dropEnergy();
   }
+
+  void makeSteal() {
+    steals++;
+    player.dropEnergy();
+  }
+
+  void makeTurnover() { turnovers++; }
 
   void makeFoul() {
     personalFouls++;
@@ -130,6 +145,14 @@ class PlayerGameStats {
     return blocks;
   }
 
+  int getSteals() {
+    return steals;
+  }
+
+  int getTurnovers() {
+    return turnovers;
+  }
+
   int getPoints() {
     return points;
   }
@@ -137,6 +160,14 @@ class PlayerGameStats {
   int getFouls() {
     return personalFouls;
   }
+
+  int getFieldGoals() { return fieldGoals; }
+
+  int getFieldGoalAttempts() { return fieldGoalAttempts; }
+
+  int getFreeThrows() { return freeThrows; }
+
+  int getFreeThrowAttempts() { return freeThrowAttempts; }
 
   int getT3fieldGoals() {
     return t3fieldGoals;

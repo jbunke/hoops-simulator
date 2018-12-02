@@ -21,9 +21,13 @@ public class Player {
   private double ASTPG = 0.0;
   private double REBPG = 0.0;
   private double BLKPG = 0.0;
+  private double STLPG = 0.0;
+  private double TOVPG = 0.0;
+  private double MINPG = 0.0;
   private int PTS = 0;
   private double FLSPG = 0.0;
   private double THREEPERC = 0.0;
+  private int THREE = 0;
 
   // TRAITS
   private Position position;
@@ -31,6 +35,7 @@ public class Player {
   final int prefJerseyNumber;
   final int height; // inches
   final int weight; // pounds
+  private int energy; // 0 - 1000
 
   // STATS
   private int stats[];
@@ -39,7 +44,9 @@ public class Player {
   public enum Status {
     FIT,
     INJURED,
-    SUSPENDED
+    SUSPENDED,
+    FOULED_OUT,
+    FATIGUED
   }
 
   public Player(String[] name, String prefName, Date birthDate) {
@@ -52,20 +59,21 @@ public class Player {
     this.jerseyNumber = -1;
     this.height = 70 + (int)(Math.random() * 15);
     this.weight = 155 + ((this.height - 70) * 7) + (int)(Math.random() * 10);
+    this.energy = 1000;
     this.status = Status.FIT;
     this.season = new ArrayList<>();
     this.pastSeasons = new ArrayList<>();
-    this.stats = new int[] {50 + (int)(Math.random() * 30), // shooting 0 - 99
-                            50 + (int)(Math.random() * 30), // rebounding 0 - 99
-                            50 + (int)(Math.random() * 30), // athleticism 0 - 99
-                            50 + (int)(Math.random() * 30), // passing 0 - 99
-                            50 + (int)(Math.random() * 30), // vision 0 - 99
-                            50 + (int)(Math.random() * 30), // clutch 0 - 99
-                            50 + (int)(Math.random() * 30), // free throw 0 - 99
-                            50 + (int)(Math.random() * 30), // block 0 - 99
-                            50 + (int)(Math.random() * 30), // driving 0 - 99
-                            2,  // injury-prone 0 - 4
-                            2}; // flagrant 0 - 4 (11 stats total)
+    this.stats = new int[] {62 + (int)(Math.random() * 30), // shooting 0 - 99
+            65 + (int)(Math.random() * 30), // rebounding 0 - 99
+            65 + (int)(Math.random() * 30), // athleticism 0 - 99
+            65 + (int)(Math.random() * 30), // passing 0 - 99
+            65 + (int)(Math.random() * 30), // vision 0 - 99
+            65 + (int)(Math.random() * 30), // clutch 0 - 99
+            65 + (int)(Math.random() * 30), // free throw 0 - 99
+            65 + (int)(Math.random() * 30), // block 0 - 99
+            65 + (int)(Math.random() * 30), // driving 0 - 99
+            2,  // injury-prone 0 - 4
+            2}; // flagrant 0 - 4 (11 stats total)
     this.overall = Player.overall(this, this.position);
   }
 
@@ -81,6 +89,7 @@ public class Player {
     this.jerseyNumber = -1;
     this.height = height;
     this.weight = weight;
+    this.energy = 1000;
     this.status = Status.FIT;
     this.season = new ArrayList<>();
     this.pastSeasons = new ArrayList<>();
@@ -109,6 +118,9 @@ public class Player {
     int rebounds = 0;
     int blocks = 0;
     int fouls = 0;
+    int steals = 0;
+    int turnovers = 0;
+    int minutes = 0;
     int threes = 0;
     int threesAttempted = 0;
     for (PlayerGameStats gameStats : season) {
@@ -117,6 +129,9 @@ public class Player {
       rebounds += gameStats.getRebounds();
       blocks += gameStats.getBlocks();
       fouls += gameStats.getFouls();
+      steals += gameStats.getSteals();
+      turnovers += gameStats.getTurnovers();
+      minutes += gameStats.mins();
       threes += gameStats.getT3fieldGoals();
       threesAttempted += gameStats.getT3fieldGoalAttempts();
     }
@@ -126,7 +141,14 @@ public class Player {
     REBPG = rebounds / gamesPlayed;
     BLKPG = blocks / gamesPlayed;
     FLSPG = fouls / gamesPlayed;
+    STLPG = steals / gamesPlayed;
+    TOVPG = turnovers / gamesPlayed;
+    MINPG = minutes / gamesPlayed;
     THREEPERC = threes / (double)threesAttempted;
+    THREE = threes;
+
+    // Stamina replenish
+    energy = Math.min(1000, energy + 100 + (int)(400 * Math.random()));
   }
 
   public double getPPG() {
@@ -153,8 +175,24 @@ public class Player {
     return FLSPG;
   }
 
+  public double getSTLPG() {
+    return STLPG;
+  }
+
+  public double getTOVPG() {
+    return TOVPG;
+  }
+
+  public double getMINPG() {
+    return MINPG;
+  }
+
   public double getTHREEPERC() {
     return THREEPERC;
+  }
+
+  public int getTHREE() {
+    return THREE;
   }
 
   public int overall() { return overall; }
@@ -246,9 +284,31 @@ public class Player {
     return age;
   }
 
+  void replenishEnergy() {
+    energy += stats[2];
+    energy = Math.min(energy, 1000);
+    if (energy > 500) {
+      setStatus(Status.FIT);
+    }
+  }
+
+  void dropEnergy() {
+    energy -= (2000 / stats[2]);
+    if (energy < 100) {
+      setStatus(Status.FATIGUED);
+    }
+  }
+
+  void unfoul() {
+    setStatus(Status.FIT);
+    energy = 1000;
+  }
+
   public Position position() { return position; }
 
   Status status() { return status; }
+
+  void setStatus(Status status) { this.status = status; }
 
   String goesBy() {
     return prefName + " " + name[name.length - 1];
