@@ -545,7 +545,7 @@ public class Game {
 
   void printBoxScore() {
     assert (played);
-    System.out.println("Box Score:");
+    System.out.println("\n" + this + "\nBox Score:");
     printXTimes("-", 10);
     System.out.println();
 

@@ -292,7 +292,10 @@ class NBAPlayers {
                   StatCalculator.updateAndFetch(new URL(BBRLINK + "w/westbru01.html"),
                           STATPATH + "okc/russell_westbrook.csv", online));
         default:
-          return null;
+          return new Player(new String[] {name.substring(0, name.indexOf(" ")),
+                  name.substring(name.indexOf(" ") + 1)}, "[BOT] " +
+                  name.substring(0, name.indexOf(" ")),
+                  new Date(2000, 1, 1));
       }
     } catch (MalformedURLException e) {
       e.printStackTrace();
