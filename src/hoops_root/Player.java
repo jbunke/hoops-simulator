@@ -64,14 +64,14 @@ public class Player {
     this.season = new ArrayList<>();
     this.pastSeasons = new ArrayList<>();
     this.stats = new int[] {62 + (int)(Math.random() * 30), // shooting 0 - 99
-            65 + (int)(Math.random() * 30), // rebounding 0 - 99
-            65 + (int)(Math.random() * 30), // athleticism 0 - 99
-            65 + (int)(Math.random() * 30), // passing 0 - 99
-            65 + (int)(Math.random() * 30), // vision 0 - 99
-            65 + (int)(Math.random() * 30), // clutch 0 - 99
-            65 + (int)(Math.random() * 30), // free throw 0 - 99
-            65 + (int)(Math.random() * 30), // block 0 - 99
-            65 + (int)(Math.random() * 30), // driving 0 - 99
+            50 + (int)(Math.random() * 30), // rebounding 0 - 99
+            50 + (int)(Math.random() * 30), // athleticism 0 - 99
+            50 + (int)(Math.random() * 30), // passing 0 - 99
+            50 + (int)(Math.random() * 30), // vision 0 - 99
+            50 + (int)(Math.random() * 30), // clutch 0 - 99
+            50 + (int)(Math.random() * 30), // free throw 0 - 99
+            50 + (int)(Math.random() * 30), // block 0 - 99
+            50 + (int)(Math.random() * 30), // driving 0 - 99
             2,  // injury-prone 0 - 4
             2}; // flagrant 0 - 4 (11 stats total)
     this.overall = Player.overall(this, this.position);
@@ -287,7 +287,7 @@ public class Player {
   void replenishEnergy() {
     energy += stats[2];
     energy = Math.min(energy, 1000);
-    if (energy > 500) {
+    if (energy > 500 && status == Status.FATIGUED) {
       setStatus(Status.FIT);
     }
   }

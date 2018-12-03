@@ -173,6 +173,19 @@ public class NBATeams {
     return new Team("TOR", "Toronto Raptors", roster);
   }
 
+  public static Team UTA(boolean online) {
+    // s, r, a, p, v, c, f, b, d
+    Player[] roster = new Player[12];
+
+    roster[0] = NBAPlayers.getPlayer("Rudy Gobert", online);
+    roster[1] = NBAPlayers.getPlayer("Donovan Mitchell", online);
+    roster[2] = NBAPlayers.getPlayer("Ricky Rubio", online);
+
+    printRoster(roster);
+    roster = botsFrom(3, roster);
+    return new Team("UTA", "Utah Jazz", roster);
+  }
+
   public static Team GUARDS() {
     // s, r, a, p, v, c, f, b, d
     Player[] roster = new Player[12];

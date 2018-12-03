@@ -32,7 +32,7 @@ public class Main {
     northwestTeams.add(NBATeams.OKC(online));
     northwestTeams.add(NBATeams.POR(online));
     northwestTeams.add(NBATeams.MIN(online));
-    northwestTeams.add(Team.botTeam("UTA", "Utah Jazz"));
+    northwestTeams.add(NBATeams.UTA(online));
     Division northwest = new Division("Northwest", northwestTeams);
 
     Conference western = new Conference("Western",

@@ -125,6 +125,12 @@ class NBAPlayers {
                   Position.SMALL_FORWARD, DominantHand.RIGHT, 13, 81, 220,
                   StatCalculator.updateAndFetch(new URL(BBRLINK + "g/georgpa01.html"),
                           STATPATH + "okc/paul_george.csv", online));
+        case "Rudy Gobert":
+          return new Player(new String[] {"Rudy", "Gobert"},
+                  "Rudy", new Date(1992, 6, 26),
+                  Position.CENTER, DominantHand.RIGHT, 27, 85, 245,
+                  StatCalculator.updateAndFetch(new URL(BBRLINK + "g/goberru01.html"),
+                          STATPATH + "uta/rudy_gobert.csv", online));
         case "Draymond Green":
           return new Player(new String[] {"Draymond", "Jamal", "Green"},
                   "Draymond", new Date(1990, 3, 4),
@@ -219,6 +225,12 @@ class NBAPlayers {
                   Position.SMALL_FORWARD, DominantHand.RIGHT, 22, 80, 234,
                   StatCalculator.updateAndFetch(new URL(BBRLINK + "m/middlkh01.html"),
                           STATPATH + "mil/khris_middleton.csv", online));
+        case "Donovan Mitchell":
+          return new Player(new String[] {"Donovan", "Mitchell"},
+                  "Donovan", new Date(1996, 9, 7),
+                  Position.SHOOTING_GUARD, DominantHand.RIGHT, 45, 75, 211,
+                  StatCalculator.updateAndFetch(new URL(BBRLINK + "m/mitchdo01.html"),
+                          STATPATH + "uta/donovan_mitchell.csv", online));
         case "Chris Paul":
           return new Player(new String[] {"Christopher", "Emmanuel", "Paul"},
                   "Chris", new Date(1985, 5, 6),
@@ -237,6 +249,12 @@ class NBAPlayers {
                   Position.POINT_GUARD, DominantHand.RIGHT, 25, 75, 190,
                   StatCalculator.updateAndFetch(new URL(BBRLINK + "r/rosede01.html"),
                           STATPATH + "min/derrick_rose.csv", online));
+        case "Ricky Rubio":
+          return new Player(new String[] {"Ricard", "Rubio"},
+                  "Ricky", new Date(1990, 10, 21),
+                  Position.POINT_GUARD, DominantHand.RIGHT, 3, 76, 194,
+                  StatCalculator.updateAndFetch(new URL(BBRLINK + "r/rubiori01.html"),
+                          STATPATH + "uta/ricky_rubio.csv", online));
         case "Ben Simmons":
           return new Player(new String[] {"Benjamin", "David", "Simmons"},
                   "Ben", new Date(1996, 7, 20),
