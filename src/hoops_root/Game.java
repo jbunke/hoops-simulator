@@ -134,8 +134,18 @@ public class Game {
   }
 
   private int rebound(int def) {
-    Player awayPlayer = awayPlaying[(int)(Math.random() * 5)];
-    Player homePlayer = homePlaying[(int)(Math.random() * 5)];
+    // less likelihood of having a back court player contesting for a rebound
+    int awayIndex = (int)(Math.random() * 5);
+    if (awayIndex < 2) {
+      awayIndex = (int)(Math.random() * 5);
+    }
+    int homeIndex = (int)(Math.random() * 5);
+    if (homeIndex < 2) {
+      homeIndex = (int)(Math.random() * 5);
+    }
+
+    Player awayPlayer = awayPlaying[awayIndex];
+    Player homePlayer = homePlaying[homeIndex];
     return contestRebound(awayPlayer, homePlayer, def);
   }
 
@@ -264,9 +274,9 @@ public class Game {
     while (seconds > 0) {
       // a play
       Player hasBall = getPlayer(team, handler);
-      int time = 5 + (int)(7 * Math.random());
+      int time = 6 + (int)(8 * Math.random());
       // TODO: clutch ??
-      if (clock < time) {
+      if (clock <= time) {
         if (hasBall.getStats()[8] > hasBall.getStats()[0] &&
                 Math.random() < .7) {
           switchPos = drive(hasBall, team, assist);
@@ -449,11 +459,11 @@ public class Game {
 
   private void teamBoxScore(Team team) {
     System.out.println(team.name());
-    printXTimes("-", 78);
+    printXTimes("-", 83);
     System.out.println();
     printRow(new String[] {"PLAYER", "MIN", "FG", "3PT", "FT",
                     "REB", "AST", "BLK", "STL", "TOV", "FLS", "PTS"},
-            new int[] {22, 5, 6, 6, 6, 3, 3, 3, 3, 3, 3, 3});
+            new int[] {27, 5, 6, 6, 6, 3, 3, 3, 3, 3, 3, 3});
     int teamFG = 0;
     int teamFGA = 0;
     int team3P = 0;
@@ -475,7 +485,7 @@ public class Game {
                         String.valueOf(plStats.getAssists()), String.valueOf(plStats.getBlocks()),
                         String.valueOf(plStats.getSteals()), String.valueOf(plStats.getTurnovers()),
                         String.valueOf(plStats.getFouls()), String.valueOf(plStats.getPoints())},
-                new int[] {22, 5, 6, 6, 6, 3, 3, 3, 3, 3, 3, 3});
+                new int[] {27, 5, 6, 6, 6, 3, 3, 3, 3, 3, 3, 3});
         teamFG += plStats.getFieldGoals();
         teamFGA += plStats.getFieldGoalAttempts();
         team3P += plStats.getT3fieldGoals();
@@ -505,8 +515,8 @@ public class Game {
                     String.valueOf(teamBLK), String.valueOf(teamSTL),
                     String.valueOf(teamTOV), String.valueOf(teamFLS),
                     String.valueOf(teamPTS)},
-            new int[] {22, 5, 6, 6, 6, 3, 3, 3, 3, 3, 3, 3});
-    printXTimes("-", 78);
+            new int[] {27, 5, 6, 6, 6, 3, 3, 3, 3, 3, 3, 3});
+    printXTimes("-", 83);
     System.out.println();
   }
 

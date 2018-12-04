@@ -28,7 +28,7 @@ public class Main {
     Division southwest = new Division("Southwest", southwestTeams);
 
     List<Team> northwestTeams = new ArrayList<>();
-    northwestTeams.add(Team.botTeam("DEN", "Denver Nuggets"));
+    northwestTeams.add(NBATeams.DEN(online));
     northwestTeams.add(NBATeams.OKC(online));
     northwestTeams.add(NBATeams.POR(online));
     northwestTeams.add(NBATeams.MIN(online));
@@ -48,16 +48,16 @@ public class Main {
 
     List<Team> centralTeams = new ArrayList<>();
     centralTeams.add(NBATeams.MIL(online));
-    centralTeams.add(Team.botTeam("DET", "Detroit Pistons"));
-    centralTeams.add(Team.botTeam("IND", "Indiana Pacers"));
-    centralTeams.add(Team.botTeam("CHI", "Chicago Bulls"));
+    centralTeams.add(NBATeams.DET(online));
+    centralTeams.add(NBATeams.IND(online));
+    centralTeams.add(NBATeams.CHI(online));
     centralTeams.add(Team.botTeam("CLE", "Cleveland Cavaliers"));
     Division central = new Division("Central", centralTeams);
 
     List<Team> southeastTeams = new ArrayList<>();
     southeastTeams.add(Team.botTeam("ORL", "Orlando Magic"));
-    southeastTeams.add(Team.botTeam("CHA", "Charlotte Hornets"));
-    southeastTeams.add(Team.botTeam("WSH", "Washington Wizards"));
+    southeastTeams.add(NBATeams.CHA(online));
+    southeastTeams.add(NBATeams.WSH(online));
     southeastTeams.add(Team.botTeam("MIA", "Miami Heat"));
     southeastTeams.add(Team.botTeam("ATL", "Atlanta Hawks"));
     Division southeast = new Division("Southeast", southeastTeams);
@@ -67,16 +67,19 @@ public class Main {
 
     League NBA = new League("National Basketball Association", 2019,
             western, eastern, 82);
-    // NBA.printTeamsQuality();
+    NBA.printTeamsQuality();
     NBA.simulateRegularSeason();
     western.printStandings();
     eastern.printStandings();
     NBA.printLeaders(StatComparator.Stat.PPG, Player::getPPG, "Points");
     NBA.printLeaders(StatComparator.Stat.ASTPG, Player::getASTPG, "Assists");
     NBA.printLeaders(StatComparator.Stat.REBPG, Player::getREBPG, "Rebounds");
+    NBA.printLeaders(StatComparator.Stat.BLKPG, Player::getREBPG, "Blocks");
+    NBA.printLeaders(StatComparator.Stat.STLPG, Player::getREBPG, "Steals");
+    NBA.printLeaders(StatComparator.Stat.TOVPG, Player::getREBPG, "Turnovers");
     NBA.printLeaders(StatComparator.Stat.THREE, Player::getTHREE, "Three-Point");
     NBA.printLeaders(StatComparator.Stat.MINPG, Player::getMINPG, "Minutes");
-    Game faceOff = new Game(NBATeams.POR(false), NBATeams.OKC(false));
+    Game faceOff = new Game(NBATeams.GUARDS(), NBATeams.FORWARDS());
     faceOff.simulate();
     faceOff.printBoxScore();
   }

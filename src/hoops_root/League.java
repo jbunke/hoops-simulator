@@ -83,7 +83,7 @@ public class League {
     }
   }
 
-  private void simulateGameDays(int n) {
+  void simulateGameDays(int n) {
     for (int i = 0; i < n; i++) {
       simulateGameDay();
     }

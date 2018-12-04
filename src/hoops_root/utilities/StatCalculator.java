@@ -53,6 +53,8 @@ public class StatCalculator {
   private static int[] generateStats(List<String[]> table, int index) {
     int[] stats = new int[11];
 
+    if (index == -1) { return stats; }
+
     int threshold = 0;
     for (String s : table.get(index)) {
       if (s.equals("")) { threshold++; }
