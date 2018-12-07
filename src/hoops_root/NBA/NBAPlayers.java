@@ -23,38 +23,26 @@ class NBAPlayers {
   static Player getPlayer(String name, boolean online, boolean best) {
     try {
       switch (name) {
-        case "Bojan Bogdanovic":
-          return new Player(new String[] {"Bojan", "Bogdanovic"},
-                  "Bojan", new Date(1989, 4, 18),
-                  Position.SMALL_FORWARD, DominantHand.RIGHT, 44, 80, 216,
-                  StatCalculator.updateAndFetch(new URL(BBRLINK + "b/bogdabo02.html"),
-                          STATPATH + "b/bojan_bogdanovic.csv", online));
-        case "Jaylen Brown":
-          return new Player(new String[] {"Jaylen", "Marselles", "Brown"},
-                  "Jaylen", new Date(1996, 10, 24),
-                  Position.SHOOTING_GUARD, DominantHand.RIGHT, 7, 79, 225,
-                  StatCalculator.updateAndFetch(new URL(BBRLINK + "b/brownja02.html"),
-                          STATPATH + "b/jaylen_brown.csv", online));
         case "Clint Capela":
           return new Player(new String[] {"Clint", "Capela"},
-                  "Jaylen", new Date(1994, 5, 18),
+                  "Clint", new Date(1994, 5, 18),
                   Position.CENTER, DominantHand.RIGHT, 15, 82, 240,
                   StatCalculator.updateAndFetch(new URL(BBRLINK + "c/capelca01.html"),
                           STATPATH + "c/clint_capela.csv", online));
         case "Damian Jones":
-          return new Player(new String[] {"Damian", "William", "Jones"},
-                  "Damian", new Date(1995, 6, 30),
-                  Position.CENTER, DominantHand.RIGHT, 15, 84, 245,
-                  StatCalculator.updateAndFetch(new URL(BBRLINK + "j/jonesda03.html"),
-                          STATPATH + "j/damian_jones.csv", online));
+          return NBAPlayerFromName(name, 3, online, best);
         case "Kemba Walker":
-          return new Player(new String[] {"Kemba", "Hudley", "Walker"},
-                  "Kemba", new Date(1990, 5, 8),
-                  Position.POINT_GUARD, DominantHand.RIGHT, 15, 73, 172,
-                  StatCalculator.updateAndFetch(new URL(BBRLINK + "w/walkeke02.html"),
-                          STATPATH + "w/kemba_walker.csv", online));
+        case "Jaylen Brown":
+        case "Bojan Bogdanovic":
+        case "Tobias Harris":
+        case "Lou Williams":
+        case "Danny Green":
+        case "Anthony Davis":
+        case "Harrison Barnes":
+        case "Magic Johnson":
+          return NBAPlayerFromName(name, 2, online, best);
         default:
-          return NBAPlayerFromName(name, online, best);
+          return NBAPlayerFromName(name, 1, online, best);
       }
     } catch (MalformedURLException e) {
       e.printStackTrace();
@@ -62,7 +50,7 @@ class NBAPlayers {
     return null;
   }
 
-  private static Player NBAPlayerFromName(String name, boolean online,
+  private static Player NBAPlayerFromName(String name, int num, boolean online,
                                           boolean best) {
     String prefName = name.substring(0, name.indexOf(" "));
     String lastName = name.substring(name.indexOf(" ") + 1);
@@ -76,7 +64,8 @@ class NBAPlayers {
       lastName = lastName.substring(0, 5);
     }
     String code = lastName.substring(0, 1) + "/" + lastName +
-            name.substring(0, 2).toLowerCase() + "01.html";
+            name.substring(0, 2).toLowerCase() + "0" +
+            String.valueOf(num) + ".html";
     URL url = null;
     try {
       url = new URL(BBRLINK + code);

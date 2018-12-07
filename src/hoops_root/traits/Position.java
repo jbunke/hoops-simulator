@@ -1,5 +1,7 @@
 package hoops_root.traits;
 
+import hoops_root.Player;
+
 public enum Position {
   POINT_GUARD(0),
   SHOOTING_GUARD(1),
@@ -29,6 +31,21 @@ public enum Position {
       default:
         return CENTER;
     }
+  }
+
+  public static Position best(Player player) {
+    Position best = Position.random();
+    int overall = 0;
+
+    for (Position position : Position.values()) {
+      int rating = Player.overall(player, position);
+      if (rating > overall) {
+        overall = rating;
+        best = position;
+      }
+    }
+
+    return best;
   }
 
   public static Position random() {

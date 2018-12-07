@@ -27,7 +27,10 @@ public class Player {
   private int PTS = 0;
   private double FLSPG = 0.0;
   private double THREEPERC = 0.0;
+  private double FTPERC = 0.0;
+  private double CLUTCHPERC = 0.0;
   private int THREE = 0;
+  private int TWO = 0;
 
   // TRAITS
   private Position position;
@@ -53,7 +56,6 @@ public class Player {
     this.name = name;
     this.prefName = prefName;
     this.birthDate = birthDate;
-    this.position = Position.random();
     this.dominantHand = DominantHand.RIGHT;
     this.prefJerseyNumber = -1; // RANDOM ASSIGNMENT VALUE // TODO
     this.jerseyNumber = -1;
@@ -74,6 +76,7 @@ public class Player {
             50 + (int)(Math.random() * 30), // driving 0 - 99
             2,  // injury-prone 0 - 4
             2}; // flagrant 0 - 4 (11 stats total)
+    this.position = Position.best(this);
     this.overall = Player.overall(this, this.position);
   }
 
@@ -111,9 +114,62 @@ public class Player {
     this.season.add(gameStats);
   }
 
+  private void ratingUpdate() {
+    int[] update = new int[11];
+    // shooting
+    update[0] = Math.min(99, 50 + (int)(THREEPERC * 100));
+    if (THREE < (MINPG * season.size()) / 48) { update[0] -= 10; }
+    update[0] = Math.max(0, update[0]);
+
+    // rebounds
+    update[1] = Math.min(50 + (int)(Math.pow(REBPG, 0.5) * 15), 99);
+
+    // athleticism
+    update[2] = Math.min(50 + (int)(PPG + (MINPG / 2)), 99);
+
+    // passing
+    update[3] = Math.min(50 + (int)(Math.sqrt(ASTPG) * 20), 99);
+    update[3] = Math.max(0, update[3] - (int)(TOVPG * 5));
+
+    // vision
+    update[4] = (int)(((5 - TOVPG) * 13) + (STLPG * 7));
+    update[4] = Math.min(99, Math.max(0, update[4]));
+
+    // clutch
+    update[5] = Math.max(0,  99 - (int)((1 - CLUTCHPERC) * 167));
+
+    // free throw
+    update[6] = Math.min(99, (int)(FTPERC * 100) + 6);
+
+    // blocking
+    update[7] = Math.min(50 + (int)(Math.sqrt(BLKPG) * 20), 99);
+
+    // driving
+    update[8] = Math.min(50 +
+            (int)(PPG * Math.pow(TWO / (double)season.size(), 0.27)), 99);
+
+    update[9] = stats[9];
+    update[10] = stats[10];
+
+    // Capping changes per update
+    for (int i = 0; i < 11; i++) {
+      if (Math.abs(stats[i] - update[i]) > 3) {
+        stats[i] += Math.signum(update[i] - stats[i]) * 3;
+      } else {
+        stats[i] = update[i];
+      }
+    }
+
+    this.overall = Player.overall(this, this.position);
+  }
+
   void statUpdate() {
-    double gamesPlayed = (double)season.size();
+    double gamesPlayed = 0.0;
     int points = 0;
+    int fts = 0;
+    int ftas = 0;
+    int clutchPlays = 0;
+    int clutchOpportunities = 0;
     int assists = 0;
     int rebounds = 0;
     int blocks = 0;
@@ -121,19 +177,28 @@ public class Player {
     int steals = 0;
     int turnovers = 0;
     int minutes = 0;
+    int twos = 0;
     int threes = 0;
     int threesAttempted = 0;
     for (PlayerGameStats gameStats : season) {
-      points += gameStats.getPoints();
-      assists += gameStats.getAssists();
-      rebounds += gameStats.getRebounds();
-      blocks += gameStats.getBlocks();
-      fouls += gameStats.getFouls();
-      steals += gameStats.getSteals();
-      turnovers += gameStats.getTurnovers();
-      minutes += gameStats.mins();
-      threes += gameStats.getT3fieldGoals();
-      threesAttempted += gameStats.getT3fieldGoalAttempts();
+      if (gameStats.mins() > 0) {
+        points += gameStats.getPoints();
+        fts += gameStats.getFreeThrows();
+        ftas += gameStats.getFreeThrowAttempts();
+        assists += gameStats.getAssists();
+        rebounds += gameStats.getRebounds();
+        blocks += gameStats.getBlocks();
+        fouls += gameStats.getFouls();
+        steals += gameStats.getSteals();
+        turnovers += gameStats.getTurnovers();
+        minutes += gameStats.mins();
+        threes += gameStats.getT3fieldGoals();
+        threesAttempted += gameStats.getT3fieldGoalAttempts();
+        twos += gameStats.getFieldGoals() - gameStats.getT3fieldGoals();
+        clutchPlays += gameStats.getClutchPlays();
+        clutchOpportunities += gameStats.getClutchOpportunities();
+        gamesPlayed++;
+      }
     }
     PPG = points / gamesPlayed;
     PTS = points;
@@ -144,11 +209,19 @@ public class Player {
     STLPG = steals / gamesPlayed;
     TOVPG = turnovers / gamesPlayed;
     MINPG = minutes / gamesPlayed;
+    FTPERC = fts / (double)ftas;
     THREEPERC = threes / (double)threesAttempted;
+    CLUTCHPERC = clutchPlays / (double)clutchOpportunities;
     THREE = threes;
+    TWO = twos;
 
     // Stamina replenish
     energy = Math.min(1000, energy + 100 + (int)(400 * Math.random()));
+
+    // Check to call for ratings update (every 10 games of season)
+    if (season.size() % 10 == 0 && season.size() >= 10) {
+      ratingUpdate();
+    }
   }
 
   public double getPPG() {
@@ -189,6 +262,10 @@ public class Player {
 
   public double getTHREEPERC() {
     return THREEPERC;
+  }
+
+  public double getCLUTCHPERC() {
+    return CLUTCHPERC;
   }
 
   public int getTHREE() {

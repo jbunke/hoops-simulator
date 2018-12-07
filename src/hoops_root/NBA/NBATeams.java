@@ -5,6 +5,21 @@ import hoops_root.Player;
 import hoops_root.Team;
 
 public class NBATeams {
+
+  public static Team ATL(boolean online) {
+    // s, r, a, p, v, c, f, b, d
+    Player[] roster = new Player[12];
+
+    roster[0] = NBAPlayers.getPlayer("Trae Young", online, false);
+    roster[1] = NBAPlayers.getPlayer("Vince Carter", online, false);
+    roster[2] = NBAPlayers.getPlayer("Kent Bazemore", online, false);
+    roster[3] = NBAPlayers.getPlayer("Jeremy Lin", online, false);
+
+    printRoster(roster);
+    roster = botsFrom(4, roster);
+    return new Team("ATL", "Atlanta Hawks", roster);
+  }
+
   public static Team BOS(boolean online) {
     // s, r, a, p, v, c, f, b, d
     Player[] roster = new Player[12];
@@ -19,6 +34,20 @@ public class NBATeams {
     printRoster(roster);
     roster = botsFrom(6, roster);
     return new Team("BOS", "Boston Celtics", roster);
+  }
+
+  public static Team BRK(boolean online) {
+    // s, r, a, p, v, c, f, b, d
+    Player[] roster = new Player[12];
+
+    roster[0] = NBAPlayers.getPlayer("DAngelo Russell", online, false);
+    roster[1] = NBAPlayers.getPlayer("Allen Crabbe", online, false);
+    roster[2] = NBAPlayers.getPlayer("Caris LeVert", online, false);
+    roster[3] = NBAPlayers.getPlayer("Spencer Dinwiddie", online, false);
+
+    printRoster(roster);
+    roster = botsFrom(4, roster);
+    return new Team("BRK", "Brooklyn Nets", roster);
   }
 
   public static Team CHA(boolean online) {
@@ -49,6 +78,20 @@ public class NBATeams {
     return new Team("CHI", "Chicago Bulls", roster);
   }
 
+  public static Team CLE(boolean online) {
+    // s, r, a, p, v, c, f, b, d
+    Player[] roster = new Player[12];
+
+    roster[0] = NBAPlayers.getPlayer("Kevin Love", online, false);
+    roster[1] = NBAPlayers.getPlayer("Tristan Thompson", online, false);
+    roster[2] = NBAPlayers.getPlayer("Jordan Clarkson", online, false);
+    roster[3] = NBAPlayers.getPlayer("JR Smith", online, false);
+
+    printRoster(roster);
+    roster = botsFrom(4, roster);
+    return new Team("CLE", "Cleveland Cavaliers", roster);
+  }
+
   public static Team DAL(boolean online) {
     // s, r, a, p, v, c, f, b, d
     Player[] roster = new Player[12];
@@ -56,9 +99,10 @@ public class NBATeams {
     roster[0] = NBAPlayers.getPlayer("Luka Doncic", online, false);
     roster[1] = NBAPlayers.getPlayer("DeAndre Jordan", online, false);
     roster[2] = NBAPlayers.getPlayer("Dwight Powell", online, false);
+    roster[3] = NBAPlayers.getPlayer("Harrison Barnes", online, false);
 
     printRoster(roster);
-    roster = botsFrom(2, roster);
+    roster = botsFrom(4, roster);
     return new Team("DAL", "Dallas Mavericks", roster);
   }
 
@@ -142,6 +186,23 @@ public class NBATeams {
     return new Team("IND", "Indiana Pacers", roster);
   }
 
+  public static Team LAC(boolean online) {
+    // s, r, a, p, v, c, f, b, d
+    Player[] roster = new Player[12];
+
+    roster[0] = NBAPlayers.getPlayer("Tobias Harris", online, false);
+    roster[1] = NBAPlayers.getPlayer("Danilo Gallinari", online, false);
+    roster[2] = NBAPlayers.getPlayer("Patrick Beverly", online, false);
+    roster[3] = NBAPlayers.getPlayer("Lou Williams", online, false);
+    roster[4] = NBAPlayers.getPlayer("Boban Marjanovic", online, false);
+    roster[5] = NBAPlayers.getPlayer("Shai Gilgeous-Alexander", online, false);
+    roster[6] = NBAPlayers.getPlayer("Montrezl Harrell", online, false);
+
+    printRoster(roster);
+    roster = botsFrom(7, roster);
+    return new Team("LAC", "Los Angeles Clippers", roster);
+  }
+
   public static Team LAL(boolean online) {
     // s, r, a, p, v, c, f, b, d
     Player[] roster = new Player[12];
@@ -161,6 +222,34 @@ public class NBATeams {
 
     printRoster(roster);
     return new Team("LAL", "Los Angeles Lakers", roster);
+  }
+
+  public static Team MEM(boolean online) {
+    // s, r, a, p, v, c, f, b, d
+    Player[] roster = new Player[12];
+
+    roster[0] = NBAPlayers.getPlayer("Mike Conley", online, false);
+    roster[1] = NBAPlayers.getPlayer("Marc Gasol", online, false);
+    roster[2] = NBAPlayers.getPlayer("Garrett Temple", online, false);
+    roster[3] = NBAPlayers.getPlayer("Wayne Selden", online, false);
+
+    printRoster(roster);
+    roster = botsFrom(4, roster);
+    return new Team("MEM", "Memphis Grizzlies", roster);
+  }
+
+  public static Team MIA(boolean online) {
+    // s, r, a, p, v, c, f, b, d
+    Player[] roster = new Player[12];
+
+    roster[0] = NBAPlayers.getPlayer("Goran Dragic", online, false);
+    roster[1] = NBAPlayers.getPlayer("Justise Winslow", online, false);
+    roster[2] = NBAPlayers.getPlayer("Bam Adebayo", online, false);
+    roster[3] = NBAPlayers.getPlayer("Hassan Whiteside", online, false);
+
+    printRoster(roster);
+    roster = botsFrom(4, roster);
+    return new Team("MIA", "Miami Heat", roster);
   }
 
   public static Team MIL(boolean online) {
@@ -197,6 +286,20 @@ public class NBATeams {
     return new Team("MIN", "Minnesota Timberwolves", roster);
   }
 
+  public static Team NOP(boolean online) {
+    // s, r, a, p, v, c, f, b, d
+    Player[] roster = new Player[12];
+
+    roster[0] = NBAPlayers.getPlayer("Anthony Davis", online, false);
+    roster[1] = NBAPlayers.getPlayer("Jrue Holiday", online, false);
+    roster[2] = NBAPlayers.getPlayer("ETwaun Moore", online, false);
+    roster[3] = NBAPlayers.getPlayer("Nikola Mirotic", online, false);
+
+    printRoster(roster);
+    roster = botsFrom(4, roster);
+    return new Team("NOP", "New Orleans Pelicans", roster);
+  }
+
   public static Team NYK(boolean online) {
     // s, r, a, p, v, c, f, b, d
     Player[] roster = new Player[12];
@@ -222,6 +325,34 @@ public class NBATeams {
     printRoster(roster);
     roster = botsFrom(3, roster);
     return new Team("OKC", "Oklahoma City Thunder", roster);
+  }
+
+  public static Team ORL(boolean online) {
+    // s, r, a, p, v, c, f, b, d
+    Player[] roster = new Player[12];
+
+    roster[0] = NBAPlayers.getPlayer("Aaron Gordon", online, false);
+    roster[1] = NBAPlayers.getPlayer("Nikola Vucevic", online, false);
+    roster[2] = NBAPlayers.getPlayer("DJ Augustin", online, false);
+    roster[3] = NBAPlayers.getPlayer("Mo Bamba", online, false);
+    roster[4] = NBAPlayers.getPlayer("Terrence Ross", online, false);
+
+    printRoster(roster);
+    roster = botsFrom(5, roster);
+    return new Team("ORL", "Orlando Magic", roster);
+  }
+
+  public static Team PHX(boolean online) {
+    // s, r, a, p, v, c, f, b, d
+    Player[] roster = new Player[12];
+
+    roster[0] = NBAPlayers.getPlayer("Devin Booker", online, false);
+    roster[1] = NBAPlayers.getPlayer("Deandre Ayton", online, false);
+    roster[2] = NBAPlayers.getPlayer("Jamal Crawford", online, false);
+
+    printRoster(roster);
+    roster = botsFrom(3, roster);
+    return new Team("PHX", "Phoenix Suns", roster);
   }
 
   public static Team POR(boolean online) {
@@ -250,6 +381,35 @@ public class NBATeams {
     return new Team("PHI", "Philadelphia 76ers", roster);
   }
 
+  public static Team SAC(boolean online) {
+    // s, r, a, p, v, c, f, b, d
+    Player[] roster = new Player[12];
+
+    roster[0] = NBAPlayers.getPlayer("Willie Cauley-Stein", online, false);
+    roster[1] = NBAPlayers.getPlayer("DeAaron Fox", online, false);
+    roster[2] = NBAPlayers.getPlayer("Bogdan Bogdanovic", online, false);
+    roster[3] = NBAPlayers.getPlayer("Buddy Hield", online, false);
+    roster[4] = NBAPlayers.getPlayer("Justin Jackson", online, false);
+
+    printRoster(roster);
+    roster = botsFrom(5, roster);
+    return new Team("SAC", "SAcramento Kings", roster);
+  }
+
+  public static Team SAS(boolean online) {
+    // s, r, a, p, v, c, f, b, d
+    Player[] roster = new Player[12];
+
+    roster[0] = NBAPlayers.getPlayer("LaMarcus Aldridge", online, false);
+    roster[1] = NBAPlayers.getPlayer("DeMar DeRozan", online, false);
+    roster[2] = NBAPlayers.getPlayer("Rudy Gay", online, false);
+    roster[3] = NBAPlayers.getPlayer("Marco Belinelli", online, false);
+
+    printRoster(roster);
+    roster = botsFrom(4, roster);
+    return new Team("SAS", "San Antonio Spurs", roster);
+  }
+
   public static Team TOR(boolean online) {
     // s, r, a, p, v, c, f, b, d
     Player[] roster = new Player[12];
@@ -257,9 +417,14 @@ public class NBATeams {
     roster[0] = NBAPlayers.getPlayer("Kawhi Leonard", online, false);
     roster[1] = NBAPlayers.getPlayer("Kyle Lowry", online, false);
     roster[2] = NBAPlayers.getPlayer("Jonas Valanciunas", online, false);
+    roster[3] = NBAPlayers.getPlayer("Pascal Siakam", online, false);
+    roster[4] = NBAPlayers.getPlayer("OG Anunoby", online, false);
+    roster[5] = NBAPlayers.getPlayer("Serge Ibaka", online, false);
+    roster[6] = NBAPlayers.getPlayer("Fred VanVleet", online, false);
+    roster[7] = NBAPlayers.getPlayer("Danny Green", online, false);
 
     printRoster(roster);
-    roster = botsFrom(3, roster);
+    roster = botsFrom(8, roster);
     return new Team("TOR", "Toronto Raptors", roster);
   }
 
@@ -337,7 +502,7 @@ public class NBATeams {
   private static void printRoster(Player[] roster) {
     for (Player player : roster) {
       if (player != null) {
-        System.out.println(player + " - " + player.overall());
+        System.out.println(player + " " + player.overall());
       }
     }
   }

@@ -85,7 +85,7 @@ public class Game {
   private int getContestStat(Player player, Trait trait) {
     switch (trait) {
       case HEIGHT_REBOUNDING:
-        return player.height + (player.getStats()[2]);
+        return (player.height / 2) + (player.getStats()[2]);
       case HEIGHT:
         return player.height;
       default:
@@ -133,7 +133,7 @@ public class Game {
     return indices[3];
   }
 
-  private int rebound(int def) {
+  private int rebound(int def, boolean clutch) {
     // less likelihood of having a back court player contesting for a rebound
     int awayIndex = (int)(Math.random() * 5);
     if (awayIndex < 2) {
@@ -146,10 +146,11 @@ public class Game {
 
     Player awayPlayer = awayPlaying[awayIndex];
     Player homePlayer = homePlaying[homeIndex];
-    return contestRebound(awayPlayer, homePlayer, def);
+    return contestRebound(awayPlayer, homePlayer, def, clutch);
   }
 
-  private int contestRebound(Player awayPlayer, Player homePlayer, int def) {
+  private int contestRebound(Player awayPlayer, Player homePlayer, int def,
+                             boolean clutch) {
     double aRand = (4 + Math.random()) / 5.0;
     double hRand = (4 + Math.random()) / 5.0;
 
@@ -159,17 +160,31 @@ public class Game {
       hRand += 0.3;
     }
 
-    if (getContestStat(awayPlayer, Trait.HEIGHT_REBOUNDING) * aRand >
-            getContestStat(homePlayer, Trait.HEIGHT_REBOUNDING) * hRand) {
-      playerStats.get(awayPlayer).makeRebound();
+    boolean make = getContestStat(awayPlayer, Trait.HEIGHT_REBOUNDING) * aRand >
+            getContestStat(homePlayer, Trait.HEIGHT_REBOUNDING) * hRand;
+
+    if (clutch) {
+      make = getContestStat(awayPlayer, Trait.HEIGHT_REBOUNDING) * aRand +
+              awayPlayer.getStats()[5] >
+              (getContestStat(homePlayer, Trait.HEIGHT_REBOUNDING) * hRand) +
+                      homePlayer.getStats()[5];
+    }
+
+    if (make) {
+      playerStats.get(awayPlayer).makeRebound(true, clutch);
+      playerStats.get(homePlayer).makeRebound(false, clutch);
       return 0;
     }
-    playerStats.get(homePlayer).makeRebound();
+    playerStats.get(homePlayer).makeRebound(true, clutch);
+    playerStats.get(awayPlayer).makeRebound(false, clutch);
     return 1;
   }
 
-  private boolean shoot (Player player, int team, Player assist) {
-    double odds = (int)(Math.random() * 196);
+  private boolean shoot (Player player, int team, Player assist, boolean clutch) {
+    double odds = (int)(Math.random() * 225);
+    if (clutch) {
+      odds += (int)(Math.random() * 60) - player.getStats()[5];
+    }
     boolean make = player.getStats()[0] > odds;
 
     if (odds % 2 == 0) {
@@ -179,7 +194,7 @@ public class Game {
           playerStats.get(assist).makeAssist();
         }
       }
-      playerStats.get(player).take3P(make);
+      playerStats.get(player).take3P(make, clutch);
     } else {
       if (make) {
         scoreBySegment.get(scoreBySegment.size() - 1)[team] += 2;
@@ -187,12 +202,12 @@ public class Game {
           playerStats.get(assist).makeAssist();
         }
       }
-      playerStats.get(player).take2P(make);
+      playerStats.get(player).take2P(make, clutch);
     }
     return make;
   }
 
-  private boolean drive(Player player, int team, Player assist) {
+  private boolean drive(Player player, int team, Player assist, boolean clutch) {
     int opps = 1 - team;
     Player defender = getPlayer(opps, (int)(Math.random() * 5));
 
@@ -201,15 +216,22 @@ public class Game {
             defender.height + defender.getStats()[7] + (20 * Math.random()) ||
             player.height + player.getStats()[2] + (20 * Math.random()) >
                     defender.height + defender.getStats()[2] + (20 * Math.random()));
+    if (clutch) {
+      make = (player.height + player.getStats()[8] + (20 * Math.random()) >
+              defender.height + defender.getStats()[7] + (20 * Math.random()) ||
+              player.height + player.getStats()[2] + (20 * Math.random()) >
+                      defender.height + defender.getStats()[2] + (20 * Math.random()) ||
+              player.getStats()[5] > defender.getStats()[5]);
+    }
     if (make) {
       scoreBySegment.get(scoreBySegment.size() - 1)[team] += 2;
       if (assist != null) {
         playerStats.get(assist).makeAssist();
       }
     } else {
-      playerStats.get(defender).makeBlock();
+      playerStats.get(defender).makeBlock(clutch);
     }
-    playerStats.get(player).take2P(make);
+    playerStats.get(player).take2P(make, clutch);
 
     if ((1 + defender.getStats()[10]) / 10.0 > Math.random()) {
       // foul
@@ -225,9 +247,10 @@ public class Game {
       }
 
       if (make) {
-        freeThrow(player, team, 1);
+        // And 1
+        freeThrow(player, team, 1, scoreBySegment.size() >= 4);
       } else {
-        make = freeThrow(player, team, 2);
+        make = freeThrow(player, team, 2, scoreBySegment.size() >= 4);
       }
     }
 
@@ -251,15 +274,19 @@ public class Game {
     return !make;
   }
 
-  private boolean freeThrow(Player player, int team, int amount) {
+  private boolean freeThrow(Player player, int team, int amount, boolean clutch) {
     int taken = 0;
     boolean made = false;
     while (taken < amount) {
-      boolean make = (player.getStats()[6] - 6 > Math.random() * 100);
+      double odds = Math.random() * 100;
+      if (clutch) {
+        odds += (int)(Math.random() * 100) - player.getStats()[5];
+      }
+      boolean make = (player.getStats()[6] - 6 > odds);
       if (make) {
         scoreBySegment.get(scoreBySegment.size() - 1)[team] += 1;
       }
-      playerStats.get(player).takeFT(make);
+      playerStats.get(player).takeFT(make, clutch);
       made = made || make;
       taken++;
     }
@@ -273,17 +300,17 @@ public class Game {
     Player assist = null;
     while (seconds > 0) {
       // a play
+      boolean clutch = seconds < 120 && scoreBySegment.size() >= 4;
       Player hasBall = getPlayer(team, handler);
-      int time = 6 + (int)(8 * Math.random());
-      // TODO: clutch ??
+      int time = 5 + (int)(7 * Math.random());
       if (clock <= time) {
         if (hasBall.getStats()[8] > hasBall.getStats()[0] &&
                 Math.random() < .7) {
-          switchPos = drive(hasBall, team, assist);
+          switchPos = drive(hasBall, team, assist, clutch);
         } else {
-          switchPos = shoot(hasBall, team, assist);
+          switchPos = shoot(hasBall, team, assist, clutch);
           if (!switchPos) {
-            int newTeam = rebound(1 - team);
+            int newTeam = rebound(1 - team, clutch);
             switchPos = newTeam != team;
             handler = (int)(Math.random() * 5);
           }
@@ -297,16 +324,16 @@ public class Game {
         double tAlleyOop = tDrive + (hasBall.getStats()[3] / 1000.0);
 
         if (decision < tShoot) {
-          switchPos = shoot(hasBall, team, assist);
+          switchPos = shoot(hasBall, team, assist, clutch);
           if (!switchPos) {
-            int newTeam = rebound(1 - team);
+            int newTeam = rebound(1 - team, clutch);
             switchPos = newTeam != team;
             handler = (int)(Math.random() * 5);
           }
         } else if (decision < tDrive) {
-          switchPos = drive(hasBall, team, assist);
+          switchPos = drive(hasBall, team, assist, clutch);
           if (!switchPos) {
-            int newTeam = rebound(1 - team);
+            int newTeam = rebound(1 - team, clutch);
             switchPos = newTeam != team;
             handler = (int)(Math.random() * 5);
           }
@@ -314,9 +341,9 @@ public class Game {
           // alley-oop
           handler = alleyOopTeammate(team, handler);
           assist = hasBall;
-          switchPos = drive(getPlayer(team, handler), team, assist);
+          switchPos = drive(getPlayer(team, handler), team, assist, clutch);
           if (!switchPos) {
-            int newTeam = rebound(1 - team);
+            int newTeam = rebound(1 - team, clutch);
             switchPos = newTeam != team;
             handler = (int)(Math.random() * 5);
           }

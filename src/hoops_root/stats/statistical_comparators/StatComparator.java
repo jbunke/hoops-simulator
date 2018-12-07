@@ -3,6 +3,7 @@ package hoops_root.stats.statistical_comparators;
 import hoops_root.Player;
 
 import java.util.Comparator;
+import java.util.function.Function;
 
 public class StatComparator implements Comparator<Player> {
   private Stat stat;
@@ -22,35 +23,60 @@ public class StatComparator implements Comparator<Player> {
     MINPG,
     PTS,
     THREEPERC,
-    THREE
+    THREE,
+    OVR
   }
 
   @Override
   public int compare(Player a, Player b) {
+    double aVal;
+    double bVal;
+    Function<Player, Number> function;
     switch (stat) {
+      case OVR:
+        return Player.overall(b, b.position()) - Player.overall(a, a.position());
       case PPG:
-        return (int)Math.signum(b.getPPG() - a.getPPG());
+        function = Player::getPPG;
+        break;
       case PTS:
-        return (int)Math.signum(b.getPTS() - a.getPTS());
+        return b.getPTS() - a.getPTS();
       case REBPG:
-        return (int)Math.signum(b.getREBPG() - a.getREBPG());
+        function = Player::getREBPG;
+        break;
       case ASTPG:
-        return (int)Math.signum(b.getASTPG() - a.getASTPG());
+        function = Player::getASTPG;
+        break;
       case FLSPG:
-        return (int)Math.signum(b.getFLSPG() - a.getFLSPG());
+        function = Player::getFLSPG;
+        break;
       case STLPG:
-        return (int)Math.signum(b.getSTLPG() - a.getSTLPG());
+        function = Player::getSTLPG;
+        break;
       case TOVPG:
-        return (int)Math.signum(b.getTOVPG() - a.getTOVPG());
+        function = Player::getTOVPG;
+        break;
       case MINPG:
-        return (int)Math.signum(b.getMINPG() - a.getMINPG());
+        function = Player::getMINPG;
+        break;
       case THREEPERC:
-        return (int)Math.signum(b.getTHREEPERC() - a.getTHREEPERC());
+        function = Player::getTHREEPERC;
+        break;
       case THREE:
-        return (int)Math.signum(b.getTHREE() - a.getTHREE());
+        return b.getTHREE() - a.getTHREE();
       case BLKPG:
       default:
-        return (int)Math.signum(b.getBLKPG() - a.getBLKPG());
+        function = Player::getBLKPG;
+        break;
     }
+
+    aVal = (double)function.apply(a);
+    bVal = (double)function.apply(b);
+
+    if (aVal > bVal) {
+      return -1;
+    } else if (bVal > aVal) {
+      return 1;
+    }
+    return 0;
   }
 }

@@ -9,12 +9,12 @@ class PlayerGameStats {
   final Team team;
   final Position position;
   private int minutes;
+  private int clutchPlays;
+  private int clutchOpportunities;
   private int fieldGoals;
   private int fieldGoalAttempts;
   private int t3fieldGoals;
   private int t3fieldGoalAttempts;
-  private int t2fieldGoals;
-  private int t2fieldGoalAttempts;
   private int freeThrows;
   private int freeThrowAttempts;
   private int rebounds;
@@ -40,8 +40,6 @@ class PlayerGameStats {
     this.fieldGoalAttempts = 0;
     this.t3fieldGoals = 0;
     this.t3fieldGoalAttempts = 0;
-    this.t2fieldGoals = 0;
-    this.t2fieldGoalAttempts = 0;
     this.freeThrows = 0;
     this.freeThrowAttempts = 0;
     this.rebounds = 0;
@@ -58,26 +56,26 @@ class PlayerGameStats {
     player.dropEnergy();
   }
 
-  void takeFT(boolean make) {
+  void takeFT(boolean make, boolean clutch) {
     freeThrowAttempts++;
     if (make) {
       freeThrows++;
       points++;
     }
+    if (clutch) { makeClutch(make); }
   }
 
-  void take2P(boolean make) {
-    t2fieldGoalAttempts++;
+  void take2P(boolean make, boolean clutch) {
     fieldGoalAttempts++;
     if (make) {
-      t2fieldGoals++;
       fieldGoals++;
       points += 2;
     }
     player.dropEnergy();
+    if (clutch) { makeClutch(make); }
   }
 
-  void take3P(boolean make) {
+  void take3P(boolean make, boolean clutch) {
     t3fieldGoalAttempts++;
     fieldGoalAttempts++;
     if (make) {
@@ -85,20 +83,23 @@ class PlayerGameStats {
       fieldGoals++;
       points += 3;
     }
+    if (clutch) { makeClutch(make); }
   }
 
   void makeAssist() {
     assists++;
   }
 
-  void makeRebound() {
-    rebounds++;
+  void makeRebound(boolean make, boolean clutch) {
+    if (make) { rebounds++; }
+    if (clutch) { makeClutch(true); }
     player.dropEnergy();
   }
 
-  void makeBlock() {
+  void makeBlock(boolean clutch) {
     blocks++;
     player.dropEnergy();
+    if (clutch) { makeClutch(true); }
   }
 
   void makeSteal() {
@@ -110,6 +111,11 @@ class PlayerGameStats {
 
   void makeFoul() {
     personalFouls++;
+  }
+
+  private void makeClutch(boolean make) {
+    clutchOpportunities++;
+    if (make) { clutchPlays++; }
   }
 
   @Override
@@ -160,6 +166,10 @@ class PlayerGameStats {
   int getFouls() {
     return personalFouls;
   }
+
+  int getClutchPlays() { return clutchPlays; }
+
+  int getClutchOpportunities() { return clutchOpportunities; }
 
   int getFieldGoals() { return fieldGoals; }
 
