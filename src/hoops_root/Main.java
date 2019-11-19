@@ -7,14 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
-  private static final boolean online = false;
+  private static final boolean online = true;
 
   public static void main(String[] args) {
     List<Team> pacificTeams = new ArrayList<>();
     pacificTeams.add(NBATeams.GSW(online));
     pacificTeams.add(NBATeams.LAC(online));
     pacificTeams.add(NBATeams.LAL(online));
-    pacificTeams.add(NBATeams.PHX(online));
+    pacificTeams.add(NBATeams.PHO(online));
     pacificTeams.add(NBATeams.SAC(online));
 
     Division pacific = new Division("Pacific", pacificTeams);
@@ -68,6 +68,7 @@ public class Main {
     League NBA = new League("National Basketball Association", 2019,
             western, eastern, 82);
     NBA.printTeamsQuality();
+    NBA.printLeaders(StatComparator.Stat.OVR, Player::overall, "Ratings");
     // NBA.simulateRegularSeason();
     NBA.simulateRegularSeason();
     western.printStandings();

@@ -50,16 +50,58 @@ class NBAPlayers {
     return null;
   }
 
+  private static Player NBAPlayerFromName(String prefName, boolean online,
+                                          boolean best, String statFilePath,
+                                          String infoFilePath, URL url) {
+    int[] stats;
+    if (best) {
+      stats = StatCalculator.best(statFilePath);
+    } else {
+      stats = StatCalculator.updateAndFetch(url, statFilePath, online);
+    }
+
+    if (online) {
+      writeToInfoFilePath(url, infoFilePath);
+    }
+    return readFromInfoFilePath(infoFilePath, prefName, stats);
+  }
+
+  static Player NBAPlayerFromName(String name, boolean online, boolean best, String linkTail) {
+    URL url = null;
+
+    try {
+      url = new URL(BBRLINK + linkTail);
+    } catch (MalformedURLException e) {
+      e.printStackTrace();
+    }
+
+    return NBAPlayerFromName(prefName(name), online, best,
+            STATPATH + fileName(name), INFOPATH + fileName(name), url);
+  }
+
+  private static String prefName(String name) {
+    return name.substring(0, name.indexOf(" "));
+  }
+
+  private static String lastName(String name) {
+    return name.substring(name.indexOf(" ") + 1);
+  }
+
+  private static String fileName(String name) {
+    String fileName = name.replaceAll(" ", "_").toLowerCase();
+    fileName = lastName(name).substring(0, 1).toLowerCase() +
+            "/" + fileName + ".csv";
+    return fileName;
+  }
+
   private static Player NBAPlayerFromName(String name, int num, boolean online,
                                           boolean best) {
-    String prefName = name.substring(0, name.indexOf(" "));
-    String lastName = name.substring(name.indexOf(" ") + 1);
     String fileName = name.replaceAll(" ", "_").toLowerCase();
-    fileName = lastName.substring(0, 1).toLowerCase() +
+    fileName = lastName(name).substring(0, 1).toLowerCase() +
             "/" + fileName + ".csv";
     String statFilePath = STATPATH + fileName;
     String infoFilePath = INFOPATH + fileName;
-    lastName = lastName.toLowerCase();
+    String lastName = lastName(name).toLowerCase();
     if (lastName.length() > 5) {
       lastName = lastName.substring(0, 5);
     }
@@ -73,17 +115,7 @@ class NBAPlayers {
       System.out.println("Invalid URL");
     }
 
-    int[] stats;
-    if (best) {
-      stats = StatCalculator.best(statFilePath);
-    } else {
-      stats = StatCalculator.updateAndFetch(url, statFilePath, online);
-    }
-
-    if (online) {
-      writeToInfoFilePath(url, infoFilePath);
-    }
-    return readFromInfoFilePath(infoFilePath, prefName, stats);
+    return NBAPlayerFromName(prefName(name), online, best, statFilePath, infoFilePath, url);
   }
 
   private static Player readFromInfoFilePath(String infoFilePath,
@@ -120,7 +152,7 @@ class NBAPlayers {
       int month = month(birthday.substring(0, birthday.indexOf(" ")));
       int day = Integer.parseInt(birthday.substring(birthday.indexOf(" ") + 1));
       int year = Integer.parseInt(info[6]);
-      int preferredNumber = Integer.parseInt(info[7]);
+      int preferredNumber = info.length >= 8 ? Integer.parseInt(info[7]) : 0;
 
       return new Player(names, prefName, new Date(year, month, day),
               position, hand, preferredNumber, height, weight, stats);

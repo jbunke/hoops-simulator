@@ -220,7 +220,7 @@ public class Player {
 
     // Check to call for ratings update (every 10 games of season)
     if (season.size() % 10 == 0 && season.size() >= 10) {
-      ratingUpdate();
+      // ratingUpdate();
     }
   }
 
@@ -292,15 +292,15 @@ public class Player {
         break;
       case SHOOTING_GUARD:
         weight[0] = 5;
-        weight[1] = 1;
-        weight[2] = 1;
+        weight[1] = 2;
+        weight[2] = 2;
         weight[3] = 4;
         weight[4] = 4;
         weight[5] = 3;
         weight[6] = 1;
-        weight[7] = 1;
-        weight[8] = 1;
-        weight[9] = 21;
+        weight[7] = 3;
+        weight[8] = 3;
+        weight[9] = 27;
         break;
       case POWER_FORWARD:
         weight[0] = 2;
@@ -328,16 +328,16 @@ public class Player {
         break;
       case CENTER:
       default:
-        weight[0] = 1;
+        weight[0] = 3;
         weight[1] = 5;
         weight[2] = 4;
-        weight[3] = 1;
-        weight[4] = 1;
+        weight[3] = 2;
+        weight[4] = 2;
         weight[5] = 3;
         weight[6] = 1;
         weight[7] = 5;
         weight[8] = 2;
-        weight[9] = 23;
+        weight[9] = 27;
         break;
     }
 

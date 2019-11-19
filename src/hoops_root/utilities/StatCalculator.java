@@ -39,7 +39,8 @@ public class StatCalculator {
     } else {
       seasonsBack++;
       while (!foundSeason && seasonsBack < table.size()) {
-        if (Integer.parseInt(table.get(table.size() - (seasonsBack + 1))[5]) >= 50) {
+        if (table.get(table.size() - (seasonsBack + 1)).length > 5 &&
+                Integer.parseInt(table.get(table.size() - (seasonsBack + 1))[5]) >= 50) {
           foundSeason = true;
         } else {
           seasonsBack++;
@@ -142,6 +143,10 @@ public class StatCalculator {
 
   private static int[] calculate(String location) {
     List<String[]> table = readCSV(location);
+
+    if (table.size() == 0 || table.get(0).length <= 1)
+      return new int[11];
+
     int index = seasonIndex(table);
     return generateStats(table, index);
   }
@@ -184,7 +189,7 @@ public class StatCalculator {
       }
       // Headers
       StringBuilder header = new StringBuilder("");
-      for (int i = 0; i < 30; i++) {
+      for (int i = 0; i < 30 && scanner.hasNext(); i++) {
         if (i != 0) {
           header.append(",");
         }
@@ -194,7 +199,7 @@ public class StatCalculator {
       }
       stats.add(header.toString());
       start = false;
-      while (!start) {
+      while (!start && scanner.hasNext()) {
         line = scanner.nextLine();
         if (line.contains("<tr")) {
           start = true;
@@ -221,6 +226,10 @@ public class StatCalculator {
           row.append(line.substring(0, line.indexOf("</" + match + ">")));
           line = line.substring(line.indexOf("</" + match + ">") + 3 + match.length());
           i++;
+          // RUDY GOBERT GLITCH FIX ATTEMPT
+          if (line.indexOf("</") == 0) {
+            line = line.substring(line.indexOf(">") + 1);
+          }
           // matcher logic
           int[] matchers = new int[] {Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE};
           if (line.contains("</td")) {
@@ -244,6 +253,9 @@ public class StatCalculator {
             line = line.substring(line.indexOf("</" + match + ">") + 3 + match.length());
           }
         }
+
+        if (!scanner.hasNext())
+          break;
 
         stats.add(row.toString());
         line = scanner.nextLine();
