@@ -8,6 +8,22 @@ import java.util.List;
 import java.util.Scanner;
 
 public class StatCalculator {
+
+  // CSV COLUMN INDICES
+  private static final int G_P = 5, G_S = 6, MINUTES = 7, S_FG_MADE = 8,
+          S_FG_ATTEMPTED = 9, S_FG_PERC = 10, S_3P_MADE = 11,
+          S_3P_ATTEMPTED = 12, S_3P_PERC = 13, S_2P_MADE = 14,
+          S_2P_ATTEMPTED = 15, S_2P_PERC = 16, S_EFG_PERC = 17,
+          S_FT_MADE = 18, S_FT_ATTEMPTED = 19, S_FT_PERC = 20,
+          S_OFF_REB = 21, S_DEF_REB = 22, S_TOT_REB = 23,
+          S_ASSISTS = 24, S_STEALS = 25, S_BLOCKS = 26,
+          S_TURNOVERS = 27, S_FOULS= 28, S_POINTS= 29;
+
+  // STAT INDICES
+  private static final int SHOOTING = 0, REBOUNDING = 1, ATHLETICISM = 2,
+          PASSING = 3, VISION = 4, CLUTCH = 5, FREE_THROW = 6, DEFENSE = 7,
+          DRIVING = 8, PRONENESS_TO_INJURY = 9, FOUL_TENDENCY = 10;
+
   private static List<String[]> readCSV(String location) {
     BufferedReader br;
     String line;
@@ -62,53 +78,69 @@ public class StatCalculator {
     }
     if (threshold > 1) { return stats; }
 
-    // shooting
+    // SHOOTING: [3P% c@ 33 for 0.45] + [3PM c@ 33 for 4] + [2P% c@ 33 for 0.55]
     float s3ptPerc = 0;
 
     if (!table.get(index)[13].equals("")) {
-      s3ptPerc = Float.parseFloat(table.get(index)[13]); // cap at .5
+      s3ptPerc = Float.parseFloat(table.get(index)[S_3P_PERC]); // cap at .45
     }
 
-    float s2ptPerc = Float.parseFloat(table.get(index)[16]); // cap at .6
+    float s2ptPerc = Float.parseFloat(table.get(index)[S_2P_PERC]); // cap at .55
+    float s3ptMade = Float.parseFloat(table.get(index)[S_3P_MADE]);
 
-    stats[0] = Math.min((int)((((s3ptPerc * 6) + (s2ptPerc * 4)) / 10) * 196), 99);
+    stats[SHOOTING] = (int)(Math.min(s3ptPerc, 0.45) * (33 / 0.45));
+    stats[SHOOTING] += (int)(Math.min(s3ptMade, 4.0) * (33 / 4.0));
+    stats[SHOOTING] += (int)(Math.min(s2ptPerc, 0.55) * (33 / 0.55));
+    stats[SHOOTING] = Math.min(stats[SHOOTING], 99);
 
-    // rebounds
-    float totalRebounds = Float.parseFloat(table.get(index)[23]); // mlt by 9 and cap
-    stats[1] = Math.min(50 + (int)(Math.sqrt(totalRebounds) * 15), 99);
+    // REBOUNDING: [50] + [sqrt(TRB) c@ 49 for 49/15]
+    float totalRebounds = Float.parseFloat(table.get(index)[S_TOT_REB]); // mlt by 9 and cap
+    stats[REBOUNDING] = Math.min(50 + (int)(Math.sqrt(totalRebounds) * 15), 99);
 
-    // athleticism
-    float ppg = Float.parseFloat(table.get(index)[29]);
-    float mins = Float.parseFloat(table.get(index)[7]);
-    stats[2] = Math.min(50 + (int)((ppg + mins) * (.7)), 99);
+    // ATHLETICISM: [MIN c@ 33 for 33] + [(6 - PF) c@ 33 for 6] + [sqrt(PPG) + sqrt(AST) + sqrt(TRB) c@ 33 for 12]
+    float ppg = Float.parseFloat(table.get(index)[S_POINTS]);
+    float mins = Float.parseFloat(table.get(index)[MINUTES]);
+    float fouls = Float.parseFloat(table.get(index)[S_FOULS]);
+    float assists = Float.parseFloat(table.get(index)[S_ASSISTS]);
+    stats[ATHLETICISM] = (int)(Math.min(mins, 33));
+    stats[ATHLETICISM] += (int)(Math.max(7.0 - fouls, 0.0) * (33 / 6.0));
+    stats[ATHLETICISM] += (int)(Math.min(Math.sqrt(ppg) +
+            Math.sqrt(assists) + Math.sqrt(totalRebounds), 12.0) * (33 / 12.0));
+    stats[ATHLETICISM] = Math.min(stats[ATHLETICISM], 99);
+    stats[ATHLETICISM] = Math.max(stats[ATHLETICISM], 1);
 
-    // passing
-    float assists = Float.parseFloat(table.get(index)[24]);
-    stats[3] = Math.min(50 + (int)(Math.sqrt(assists) * 15), 99);
+    // PASSING: [sqrt(AST) c@ 53 for 3.2] + [AST / sqrt(TOV) c@ 53 for 4.0]
+    float turnovers = Float.parseFloat(table.get(index)[S_TURNOVERS]);
+    stats[PASSING] = (int)(Math.min(Math.sqrt(assists), 3.2) * (53 / 3.2));
+    stats[PASSING] += (int)(Math.min(assists / Math.sqrt(turnovers), 5.0) * (53 / 5.0));
+    stats[PASSING] = Math.min(stats[PASSING], 99);
 
-    // vision
-    float pointsToTurnovers = Float.parseFloat(table.get(index)[29]) /
-            Float.parseFloat(table.get(index)[27]);
-    stats[4] = Math.min((int)(5 * pointsToTurnovers) +
-            (int)(Math.sqrt(assists) * 15), 99);
+    // VISION: [sqrt(STL) c@ 38 for 1.35] + [AST / MIN c@ 38 for 0.25] + [PPG c@ 30 for 28.5]
+    float steals = Float.parseFloat(table.get(index)[S_STEALS]);
+    stats[VISION] = (int)(Math.min(Math.sqrt(steals), 1.35) * (38 / 1.35));
+    stats[VISION] += (int)(Math.min(assists / mins, 0.25) * (38 / 0.25));
+    stats[VISION] += (int)(Math.min(ppg, 28.5) * (30 / 28.5));
+    stats[VISION] = Math.min(stats[VISION], 99);
 
-    // clutch TODO
-    stats[5] = 70; // how to assess clutch?
+    // CLUTCH TODO
+    stats[CLUTCH] = 70; // how to assess clutch?
 
-    // free throw
-    stats[6] = 30;
-    if (table.get(index)[20].length() > 0) {
-      float freeThrow = Float.parseFloat(table.get(index)[20]);
-      stats[6] = Math.min((int)(freeThrow * 100) + 6, 99);
+    // FREE THROW: [FT% + 6 c@ 99]
+    stats[FREE_THROW] = 30;
+    if (table.get(index)[S_FT_PERC].length() > 0) {
+      float freeThrow = Float.parseFloat(table.get(index)[S_FT_PERC]);
+      stats[FREE_THROW] = Math.min((int)(freeThrow * 100) + 6, 99);
     }
 
-    // blocking
-    float blocking = Float.parseFloat(table.get(index)[26]);
-    stats[7] = Math.min(50 + (int)(Math.sqrt(blocking) * 28), 99);
+    // DEFENSE: [sqrt(STL) / MIN c@ 55 for 0.038] + [sqrt(BLK) / MIN c@ 55 for 0.04]
+    float blocking = Float.parseFloat(table.get(index)[S_BLOCKS]);
+    stats[DEFENSE] = (int)(Math.min(Math.sqrt(steals) / mins, 0.038) * (55 / 0.038));
+    stats[DEFENSE] += (int)(Math.min(Math.sqrt(blocking) / mins, 0.04) * (55 / 0.04));
+    stats[DEFENSE] = Math.min(stats[DEFENSE], 99);
 
-    // driving
-    float s2ps = Float.parseFloat(table.get(index)[14]);
-    stats[8] = Math.min(50 + (int)(ppg * Math.pow(s2ps, (1/4.0))), 99);
+    // DRIVING...
+    float s2ps = Float.parseFloat(table.get(index)[S_2P_MADE]);
+    stats[DRIVING] = Math.min(50 + (int)(ppg * Math.pow(s2ps, (1/4.0))), 99);
 
     // injury-prone
     int gamesPlayed = 0;
@@ -123,20 +155,19 @@ public class StatCalculator {
     int gamesPerSeason = gamesPlayed / ((currentAge + 1) - startingAge);
 
     if (gamesPerSeason >= 77) {
-      stats[9] = 0;
+      stats[PRONENESS_TO_INJURY] = 0;
     } else if (gamesPerSeason >= 70) {
-      stats[9] = 1;
+      stats[PRONENESS_TO_INJURY] = 1;
     } else if (gamesPerSeason >= 60) {
-      stats[9] = 2;
+      stats[PRONENESS_TO_INJURY] = 2;
     } else if (gamesPerSeason >= 50) {
-      stats[9] = 3;
+      stats[PRONENESS_TO_INJURY] = 3;
     } else {
-      stats[9] = 4;
+      stats[PRONENESS_TO_INJURY] = 4;
     }
 
     // flagrant
-    float fouls = Float.parseFloat(table.get(index)[28]);
-    stats[10] = Math.max(0, Math.min((int)(fouls) - 1, 4));
+    stats[FOUL_TENDENCY] = Math.max(0, Math.min((int)(fouls) - 1, 4));
 
     return stats;
   }
@@ -287,6 +318,9 @@ public class StatCalculator {
         }
       }
     }
+    if (statsList.size() <= k)
+      return new int[11];
+
     return statsList.get(k);
   }
 

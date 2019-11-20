@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
-  private static final boolean online = true;
+  private static final boolean online = false;
 
   public static void main(String[] args) {
     List<Team> pacificTeams = new ArrayList<>();
@@ -56,8 +56,8 @@ public class Main {
 
     List<Team> southeastTeams = new ArrayList<>();
     southeastTeams.add(NBATeams.ORL(online));
-    southeastTeams.add(NBATeams.CHA(online));
-    southeastTeams.add(NBATeams.WSH(online));
+    southeastTeams.add(NBATeams.CHO(online));
+    southeastTeams.add(NBATeams.WAS(online));
     southeastTeams.add(NBATeams.MIA(online));
     southeastTeams.add(NBATeams.ATL(online));
     Division southeast = new Division("Southeast", southeastTeams);
@@ -70,7 +70,7 @@ public class Main {
     NBA.printTeamsQuality();
     NBA.printLeaders(StatComparator.Stat.OVR, Player::overall, "Ratings");
     // NBA.simulateRegularSeason();
-    NBA.simulateRegularSeason();
+    NBA.simulateSeason();
     western.printStandings();
     eastern.printStandings();
     NBA.printLeaders(StatComparator.Stat.OVR, Player::overall, "Ratings");

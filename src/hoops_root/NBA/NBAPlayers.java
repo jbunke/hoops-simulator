@@ -80,10 +80,14 @@ class NBAPlayers {
   }
 
   private static String prefName(String name) {
+    if (!name.contains(" ")) return name;
+
     return name.substring(0, name.indexOf(" "));
   }
 
   private static String lastName(String name) {
+    if (!name.contains(" ")) return name;
+
     return name.substring(name.indexOf(" ") + 1);
   }
 

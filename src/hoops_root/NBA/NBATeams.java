@@ -4,7 +4,7 @@ import hoops_root.Date;
 import hoops_root.Player;
 import hoops_root.Team;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -15,6 +15,7 @@ import java.util.Scanner;
 public class NBATeams {
 
   private static final String BBRLINK = "https://www.basketball-reference.com/teams/";
+  private static final String TEAM_ROSTERS_PATH = "resources/team_rosters/";
   private static final int CURRENT_YEAR = 2020;
 
   public static Team ATL(boolean online) {
@@ -38,16 +39,17 @@ public class NBATeams {
     return new Team("BRK", "Brooklyn Nets", roster);
   }
 
-  public static Team CHA(boolean online) {
+  public static Team CHO(boolean online) {
     // s, r, a, p, v, c, f, b, d
-    Player[] roster = NBARosterFetcher(CURRENT_YEAR, "CHA", online);
+    Player[] roster = NBARosterFetcher(CURRENT_YEAR, "CHO", online);
     printRoster(roster);
-    return new Team("CHA", "Charlotte Hornets", roster);
+    return new Team("CHO", "Charlotte Hornets", roster);
   }
 
   public static Team CHI(boolean online) {
     // s, r, a, p, v, c, f, b, d
-    Player[] roster = new Player[12];NBARosterFetcher(CURRENT_YEAR, "CHI", online);
+    Player[] roster = NBARosterFetcher(CURRENT_YEAR, "CHI", online);
+    printRoster(roster);
     return new Team("CHI", "Chicago Bulls", roster);
   }
 
@@ -60,7 +62,7 @@ public class NBATeams {
 
   public static Team DAL(boolean online) {
     // s, r, a, p, v, c, f, b, d
-    Player[] roster = NBARosterFetcher(CURRENT_YEAR, "GSW", online);
+    Player[] roster = NBARosterFetcher(CURRENT_YEAR, "DAL", online);
     printRoster(roster);
     return new Team("DAL", "Dallas Mavericks", roster);
   }
@@ -219,18 +221,18 @@ public class NBATeams {
     return new Team("UTA", "Utah Jazz", roster);
   }
 
-  public static Team WSH(boolean online) {
+  public static Team WAS(boolean online) {
     // s, r, a, p, v, c, f, b, d
-    Player[] roster = NBARosterFetcher(CURRENT_YEAR, "WSH", online);
+    Player[] roster = NBARosterFetcher(CURRENT_YEAR, "WAS", online);
     printRoster(roster);
-    return new Team("WSH", "Washington Wizards", roster);
+    return new Team("WAS", "Washington Wizards", roster);
   }
 
   public static Team GUARDS() {
     // s, r, a, p, v, c, f, b, d
     Player[] roster = new Player[12];
     roster[0] = NBAPlayers.getPlayer("Michael Jordan", false, true);
-    roster[1] = NBAPlayers.getPlayer("Steph Curry", false, true);
+    roster[1] = NBAPlayers.getPlayer("Stephen Curry", false, true);
     roster[2] = NBAPlayers.getPlayer("James Harden", false, true);
     roster[3] = NBAPlayers.getPlayer("Chris Paul", false, true);
     roster[4] = NBAPlayers.getPlayer("Damian Lillard", false, true);
@@ -249,8 +251,9 @@ public class NBATeams {
     roster[0] = NBAPlayers.getPlayer("Joel Embiid", false, true);
     roster[1] = NBAPlayers.getPlayer("Giannis Antetokounmpo", false, true);
     roster[2] = NBAPlayers.getPlayer("Kareem Abdul-Jabbar", false, true);
-    roster[3] = NBAPlayers.getPlayer("DeMarcus Cousins", false, true);
+    roster[3] = NBAPlayers.getPlayer("Karl-Anthony Towns", false, true);
     roster[4] = NBAPlayers.getPlayer("LeBron James", false, true);
+    roster[5] = NBAPlayers.getPlayer("Luka Dončić", false, true);
     printRoster(roster);
     roster = botsFrom(5, roster);
     return new Team("FOR", "NBA Forwards", roster);
@@ -269,7 +272,46 @@ public class NBATeams {
     return new Team("LEG", "NBA Legends", roster);
   }
 
+  private static Player[] getOfflineRoster(String teamCode) {
+    String path = TEAM_ROSTERS_PATH + teamCode + ".txt";
+    List<Player> players = new ArrayList<>();
+
+    try {
+      BufferedReader br = new BufferedReader(new FileReader(path));
+      while (br.ready()) {
+        String name = br.readLine();
+
+        if (name.trim().length() > 0) {
+          players.add(NBAPlayers.NBAPlayerFromName(name, false, false, ""));
+        }
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    return listToArrayPlayers(players);
+  }
+
+  private static Player[] listToArrayPlayers(List<Player> players) {
+    for (int i = 0; i < players.size(); i++) {
+      if (players.get(i) == null) {
+        players.remove(i);
+        i--;
+      }
+    }
+
+    Player[] roster = new Player[players.size()];
+
+    for (int i = 0; i < roster.length; i++) {
+      roster[i] = players.get(i);
+    }
+
+    return roster;
+  }
+
   private static Player[] NBARosterFetcher(int year, String teamCode, boolean online) {
+    if (!online) return getOfflineRoster(teamCode);
+
     String link = BBRLINK + teamCode + "/" + year + ".html";
     URL url = null;
     try {
@@ -313,14 +355,24 @@ public class NBATeams {
       e.printStackTrace();
     }
 
-    Player[] roster = new Player[dynamicList.size()];
-
-    for (int i = 0; i < roster.length; i++) {
-      roster[i] = dynamicList.get(i);
-    }
-    // <a href="/players/
+    Player[] roster = listToArrayPlayers(dynamicList);
+    writeRoster(teamCode, roster);
 
     return roster;
+  }
+
+  private static void writeRoster(String teamCode, Player[] roster) {
+    String path = TEAM_ROSTERS_PATH + teamCode + ".txt";
+    try {
+      BufferedWriter bw = new BufferedWriter(new FileWriter(path));
+      for (Player player : roster) {
+        bw.write(player.goesBy());
+        bw.newLine();
+      }
+      bw.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   private static void printRoster(Player[] roster) {

@@ -47,9 +47,11 @@ public class Game {
       }
     }
 
+    /*
     if (playerStats.size() != 24) {
       System.out.print("PANIC");
     }
+    */
   }
 
   private int contestAll(Trait trait) {

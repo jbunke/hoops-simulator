@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Player {
+  private static final int SHOOTING = 0, REBOUNDING = 1, ATHLETICISM = 2,
+          PASSING = 3, VISION = 4, CLUTCH = 5, FREE_THROW = 6, DEFENSE = 7,
+          DRIVING = 8, TOTAL = 9;
+
   private final String[] name;
   private String prefName;
   private final Date birthDate;
@@ -279,16 +283,16 @@ public class Player {
 
     switch (position) {
       case POINT_GUARD:
-        weight[0] = 4;
-        weight[1] = 2;
-        weight[2] = 2;
-        weight[3] = 5;
-        weight[4] = 5;
-        weight[5] = 3;
-        weight[6] = 1;
-        weight[7] = 2;
-        weight[8] = 3;
-        weight[9] = 27;
+        weight[SHOOTING] = 4;
+        weight[REBOUNDING] = 2;
+        weight[ATHLETICISM] = 2;
+        weight[PASSING] = 5;
+        weight[VISION] = 5;
+        weight[CLUTCH] = 3;
+        weight[FREE_THROW] = 1;
+        weight[DEFENSE] = 2;
+        weight[DRIVING] = 3;
+        weight[TOTAL] = 27;
         break;
       case SHOOTING_GUARD:
         weight[0] = 5;
@@ -315,16 +319,16 @@ public class Player {
         weight[9] = 27;
         break;
       case SMALL_FORWARD:
-        weight[0] = 3;
-        weight[1] = 3;
-        weight[2] = 3;
-        weight[3] = 3;
-        weight[4] = 3;
-        weight[5] = 3;
-        weight[6] = 1;
-        weight[7] = 3;
-        weight[8] = 5;
-        weight[9] = 27;
+        weight[SHOOTING] = 3;
+        weight[REBOUNDING] = 3;
+        weight[ATHLETICISM] = 3;
+        weight[PASSING] = 3;
+        weight[VISION] = 3;
+        weight[CLUTCH] = 3;
+        weight[FREE_THROW] = 1;
+        weight[DEFENSE] = 3;
+        weight[DRIVING] = 5;
+        weight[TOTAL] = 27;
         break;
       case CENTER:
       default:
@@ -387,7 +391,10 @@ public class Player {
 
   void setStatus(Status status) { this.status = status; }
 
-  String goesBy() {
+  public String goesBy() {
+    // Brazilian rule
+    if (prefName.equals(name[name.length - 1])) return prefName;
+
     return prefName + " " + name[name.length - 1];
   }
 
