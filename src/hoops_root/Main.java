@@ -10,6 +10,7 @@ public class Main {
   private static final boolean online = false;
 
   public static void main(String[] args) {
+    NBATeams.WAS(online);
     List<Team> pacificTeams = new ArrayList<>();
     pacificTeams.add(NBATeams.GSW(online));
     pacificTeams.add(NBATeams.LAC(online));
@@ -75,13 +76,13 @@ public class Main {
     eastern.printStandings();
     NBA.printLeaders(StatComparator.Stat.OVR, Player::overall, "Ratings");
     NBA.printLeaders(StatComparator.Stat.PTS, Player::getPTS, "Scoring");
-//    NBA.printLeaders(StatComparator.Stat.ASTPG, Player::getASTPG, "Assists");
-//    NBA.printLeaders(StatComparator.Stat.REBPG, Player::getREBPG, "Rebounds");
-//    NBA.printLeaders(StatComparator.Stat.BLKPG, Player::getBLKPG, "Blocks");
-//    NBA.printLeaders(StatComparator.Stat.STLPG, Player::getSTLPG, "Steals");
-//    NBA.printLeaders(StatComparator.Stat.TOVPG, Player::getTOVPG, "Turnovers");
-//    NBA.printLeaders(StatComparator.Stat.THREE, Player::getTHREE, "Three-Point");
-//    NBA.printLeaders(StatComparator.Stat.MINPG, Player::getMINPG, "Minutes");
+    NBA.printLeaders(StatComparator.Stat.ASTPG, Player::getASTPG, "Assists");
+    NBA.printLeaders(StatComparator.Stat.REBPG, Player::getREBPG, "Rebounds");
+    NBA.printLeaders(StatComparator.Stat.BLKPG, Player::getBLKPG, "Blocks");
+    NBA.printLeaders(StatComparator.Stat.STLPG, Player::getSTLPG, "Steals");
+    NBA.printLeaders(StatComparator.Stat.TOVPG, Player::getTOVPG, "Turnovers");
+    NBA.printLeaders(StatComparator.Stat.THREE, Player::getTHREE, "Three-Point");
+    NBA.printLeaders(StatComparator.Stat.MINPG, Player::getMINPG, "Minutes");
     Game faceOff = new Game(NBATeams.GUARDS(), NBATeams.FORWARDS());
     faceOff.simulate();
     faceOff.printBoxScore();

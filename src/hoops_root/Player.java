@@ -7,8 +7,8 @@ import java.util.List;
 
 public class Player {
   private static final int SHOOTING = 0, REBOUNDING = 1, ATHLETICISM = 2,
-          PASSING = 3, VISION = 4, CLUTCH = 5, FREE_THROW = 6, DEFENSE = 7,
-          DRIVING = 8, TOTAL = 9;
+          PASSING = 3, EFFICIENCY = 4, CLUTCH = 5, FREE_THROW = 6, DEFENSE = 7,
+          SCORING = 8, TOTAL = 9;
 
   private final String[] name;
   private String prefName;
@@ -286,62 +286,62 @@ public class Player {
         weight[SHOOTING] = 4;
         weight[REBOUNDING] = 2;
         weight[ATHLETICISM] = 2;
-        weight[PASSING] = 5;
-        weight[VISION] = 5;
+        weight[PASSING] = 6;
+        weight[EFFICIENCY] = 5;
         weight[CLUTCH] = 3;
-        weight[FREE_THROW] = 1;
+        weight[FREE_THROW] = 2;
         weight[DEFENSE] = 2;
-        weight[DRIVING] = 3;
-        weight[TOTAL] = 27;
+        weight[SCORING] = 4;
+        weight[TOTAL] = 30;
         break;
       case SHOOTING_GUARD:
-        weight[0] = 5;
-        weight[1] = 2;
-        weight[2] = 2;
-        weight[3] = 4;
-        weight[4] = 4;
-        weight[5] = 3;
-        weight[6] = 1;
-        weight[7] = 3;
-        weight[8] = 3;
-        weight[9] = 27;
+        weight[SHOOTING] = 6;
+        weight[REBOUNDING] = 3;
+        weight[ATHLETICISM] = 2;
+        weight[PASSING] = 4;
+        weight[EFFICIENCY] = 3;
+        weight[CLUTCH] = 3;
+        weight[FREE_THROW] = 2;
+        weight[DEFENSE] = 4;
+        weight[SCORING] = 3;
+        weight[TOTAL] = 30;
         break;
       case POWER_FORWARD:
-        weight[0] = 2;
-        weight[1] = 4;
-        weight[2] = 5;
-        weight[3] = 2;
-        weight[4] = 2;
-        weight[5] = 3;
-        weight[6] = 1;
-        weight[7] = 4;
-        weight[8] = 4;
-        weight[9] = 27;
+        weight[SHOOTING] = 2;
+        weight[REBOUNDING] = 5;
+        weight[ATHLETICISM] = 6;
+        weight[PASSING] = 2;
+        weight[EFFICIENCY] = 2;
+        weight[CLUTCH] = 3;
+        weight[FREE_THROW] = 2;
+        weight[DEFENSE] = 4;
+        weight[SCORING] = 4;
+        weight[TOTAL] = 30;
         break;
       case SMALL_FORWARD:
         weight[SHOOTING] = 3;
-        weight[REBOUNDING] = 3;
+        weight[REBOUNDING] = 4;
         weight[ATHLETICISM] = 3;
         weight[PASSING] = 3;
-        weight[VISION] = 3;
+        weight[EFFICIENCY] = 3;
         weight[CLUTCH] = 3;
-        weight[FREE_THROW] = 1;
+        weight[FREE_THROW] = 2;
         weight[DEFENSE] = 3;
-        weight[DRIVING] = 5;
-        weight[TOTAL] = 27;
+        weight[SCORING] = 6;
+        weight[TOTAL] = 30;
         break;
       case CENTER:
       default:
-        weight[0] = 3;
-        weight[1] = 5;
-        weight[2] = 4;
-        weight[3] = 2;
-        weight[4] = 2;
-        weight[5] = 3;
-        weight[6] = 1;
-        weight[7] = 5;
-        weight[8] = 2;
-        weight[9] = 27;
+        weight[SHOOTING] = 3;
+        weight[REBOUNDING] = 6;
+        weight[ATHLETICISM] = 5;
+        weight[PASSING] = 2;
+        weight[EFFICIENCY] = 2;
+        weight[CLUTCH] = 3;
+        weight[FREE_THROW] = 2;
+        weight[DEFENSE] = 5;
+        weight[SCORING] = 2;
+        weight[TOTAL] = 30;
         break;
     }
 
@@ -350,8 +350,8 @@ public class Player {
       weight[i] += 3;
       statSum += (player.stats[i] * weight[i]);
     }
-    weight[9] += 27;
-    return Math.min(99, (statSum / weight[9]) + 5);
+    weight[TOTAL] += (9 * 3);
+    return Math.min(99, (statSum / weight[TOTAL]) + 5);
   }
 
   int age(Date referenceDate) {
