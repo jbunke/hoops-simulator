@@ -368,7 +368,7 @@ public class Player {
   void replenishEnergy() {
     energy += stats[2];
     energy = Math.min(energy, 1000);
-    if (energy > 500 && status == Status.FATIGUED) {
+    if (energy > 600 && status == Status.FATIGUED) {
       setStatus(Status.FIT);
     }
   }

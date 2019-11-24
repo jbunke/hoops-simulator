@@ -1,5 +1,7 @@
 package hoops_root;
 
+import hoops_root.stats.statistical_comparators.StatComparator;
+
 import java.util.*;
 
 public class Game {
@@ -17,6 +19,11 @@ public class Game {
     HEIGHT,
     HEIGHT_REBOUNDING
   }
+
+  // STAT INDICES
+  private static final int SHOOTING = 0, REBOUNDING = 1, ATHLETICISM = 2,
+          PASSING = 3, EFFICIENCY = 4, CLUTCH = 5, FREE_THROW = 6, DEFENSE = 7,
+          SCORING = 8, PRONENESS_TO_INJURY = 9, FOUL_TENDENCY = 10;
 
   Game(Team away, Team home) {
     this.away = away;
@@ -120,9 +127,9 @@ public class Game {
       }
     }
     int totalVision = 0;
-    int[] thresholds = new int[] {candidates[0].getStats()[4],
-            candidates[0].getStats()[4] + candidates[1].getStats()[4],
-            candidates[0].getStats()[4] + candidates[1].getStats()[4] + candidates[2].getStats()[4]};
+    int[] thresholds = new int[] {candidates[0].getStats()[SCORING],
+            candidates[0].getStats()[SCORING] + candidates[1].getStats()[SCORING],
+            candidates[0].getStats()[SCORING] + candidates[1].getStats()[SCORING] + candidates[2].getStats()[SCORING]};
     for (Player candidate : candidates) {
       totalVision += candidate.getStats()[4];
     }
@@ -167,9 +174,9 @@ public class Game {
 
     if (clutch) {
       make = getContestStat(awayPlayer, Trait.HEIGHT_REBOUNDING) * aRand +
-              awayPlayer.getStats()[5] >
+              awayPlayer.getStats()[CLUTCH] >
               (getContestStat(homePlayer, Trait.HEIGHT_REBOUNDING) * hRand) +
-                      homePlayer.getStats()[5];
+                      homePlayer.getStats()[CLUTCH];
     }
 
     if (make) {
@@ -185,9 +192,9 @@ public class Game {
   private boolean shoot (Player player, int team, Player assist, boolean clutch) {
     double odds = (int)(Math.random() * 225);
     if (clutch) {
-      odds += (int)(Math.random() * 60) - player.getStats()[5];
+      odds += (int)(Math.random() * 60) - player.getStats()[CLUTCH];
     }
-    boolean make = player.getStats()[0] > odds;
+    boolean make = player.getStats()[SHOOTING] > odds;
 
     if (odds % 2 == 0) {
       if (make) {
@@ -214,16 +221,16 @@ public class Game {
     Player defender = getPlayer(opps, (int)(Math.random() * 5));
 
     // dunk is made if player is better dunker than defender is blocker or if player is more athletic
-    boolean make = (player.height + player.getStats()[8] + (20 * Math.random()) >
-            defender.height + defender.getStats()[7] + (20 * Math.random()) ||
-            player.height + player.getStats()[2] + (20 * Math.random()) >
-                    defender.height + defender.getStats()[2] + (20 * Math.random()));
+    boolean make = (player.height + player.getStats()[SCORING] + (20 * Math.random()) >
+            defender.height + defender.getStats()[DEFENSE] + (20 * Math.random()) ||
+            player.height + player.getStats()[ATHLETICISM] + (20 * Math.random()) >
+                    defender.height + defender.getStats()[ATHLETICISM] + (20 * Math.random()));
     if (clutch) {
-      make = (player.height + player.getStats()[8] + (20 * Math.random()) >
-              defender.height + defender.getStats()[7] + (20 * Math.random()) ||
-              player.height + player.getStats()[2] + (20 * Math.random()) >
-                      defender.height + defender.getStats()[2] + (20 * Math.random()) ||
-              player.getStats()[5] > defender.getStats()[5]);
+      make = (player.height + player.getStats()[SCORING] + (20 * Math.random()) >
+              defender.height + defender.getStats()[DEFENSE] + (20 * Math.random()) ||
+              player.height + player.getStats()[ATHLETICISM] + (20 * Math.random()) >
+                      defender.height + defender.getStats()[ATHLETICISM] + (20 * Math.random()) ||
+              player.getStats()[CLUTCH] > defender.getStats()[CLUTCH]);
     }
     if (make) {
       scoreBySegment.get(scoreBySegment.size() - 1)[team] += 2;
@@ -235,7 +242,7 @@ public class Game {
     }
     playerStats.get(player).take2P(make, clutch);
 
-    if ((1 + defender.getStats()[10]) / 10.0 > Math.random()) {
+    if ((1 + defender.getStats()[FOUL_TENDENCY]) / 10.0 > Math.random()) {
       // foul
       playerStats.get(defender).makeFoul();
       if (playerStats.get(defender).getFouls() == 6) {
@@ -264,9 +271,11 @@ public class Game {
     Player defender = getPlayer(opps, (int)(Math.random() * 5));
 
     // pass can be intercepted
-    boolean make = (
-            player.getStats()[3] + (40 * Math.random()) >
-            defender.getStats()[4] + (10 * Math.random()));
+    double defOdds = defender.getStats()[DEFENSE] + (20 * Math.random());
+    double offOdds = player.getStats()[PASSING] + (Math.sqrt(Math.random() * 2e4));
+
+    boolean make = offOdds > defOdds;
+
     if (!make) {
       playerStats.get(defender).makeSteal();
       playerStats.get(player).makeTurnover();
@@ -284,7 +293,7 @@ public class Game {
       if (clutch) {
         odds += (int)(Math.random() * 100) - player.getStats()[5];
       }
-      boolean make = (player.getStats()[6] - 6 > odds);
+      boolean make = (player.getStats()[FREE_THROW] - 6 > odds);
       if (make) {
         scoreBySegment.get(scoreBySegment.size() - 1)[team] += 1;
       }
@@ -293,6 +302,33 @@ public class Game {
       taken++;
     }
     return made;
+  }
+
+  private int choosePass(int team, int handler, double urgency) {
+    int passTo;
+
+    // Non-random or random recipient
+    if (urgency > Math.random()) {
+      List<Player> teammates = new ArrayList<>();
+      Map<Player, Integer> playersIndices = new HashMap<>();
+
+      for (int i = 0; i < 5; i++) {
+        if (i == handler) continue;
+        teammates.add(getPlayer(team, i));
+        playersIndices.put(getPlayer(team, i), i);
+      }
+
+      teammates.sort(new StatComparator(StatComparator.Stat.OVR));
+
+      int listIndex = (int)(Math.pow(Math.random() * 1.8, 2.0));
+      passTo = playersIndices.get(teammates.get(listIndex));
+    } else {
+      do {
+        passTo = (int)(Math.random() * 5);
+      } while (passTo == handler);
+    }
+
+    return passTo;
   }
 
   private void simSegment(int seconds, int team,
@@ -304,9 +340,9 @@ public class Game {
       // a play
       boolean clutch = seconds < 120 && scoreBySegment.size() >= 4;
       Player hasBall = getPlayer(team, handler);
-      int time = 5 + (int)(7 * Math.random());
+      int time = 4 + (int)(5 * Math.random());
       if (clock <= time) {
-        if (hasBall.getStats()[8] > hasBall.getStats()[0] &&
+        if (hasBall.getStats()[SCORING] > hasBall.getStats()[SHOOTING] &&
                 Math.random() < .7) {
           switchPos = drive(hasBall, team, assist, clutch);
         } else {
@@ -321,9 +357,18 @@ public class Game {
         // pass, shoot, or drive
         double decision = Math.random();
 
-        double tShoot = Math.pow(hasBall.getStats()[0], 2) / 30000.0;
-        double tDrive = tShoot + (hasBall.getStats()[8] / 500.0);
-        double tAlleyOop = tDrive + (hasBall.getStats()[3] / 1000.0);
+        double tShoot = hasBall.getStats()[SHOOTING] / 300.0;
+        double tDrive = tShoot + (hasBall.getStats()[SCORING] / 300.0);
+        double tAlleyOop = tDrive + (hasBall.getStats()[PASSING] / 700.0);
+
+        double passingMultiplier = (90 / (double) hasBall.getStats()[PASSING]);
+        double timeMultiplier = ((25 - (clock - time)) / (double)25);
+
+        double multiplier = timeMultiplier * passingMultiplier;
+
+        tShoot *= multiplier;
+        tDrive *= multiplier;
+        tAlleyOop *= multiplier;
 
         if (decision < tShoot) {
           switchPos = shoot(hasBall, team, assist, clutch);
@@ -351,10 +396,8 @@ public class Game {
           }
         } else {
           // pass
-          int passTo = handler;
-          while (passTo == handler) {
-            passTo = (int)(Math.random() * 5);
-          }
+          int passTo = choosePass(team, handler, timeMultiplier);
+
           assist = hasBall;
           handler = passTo;
           // pass can be intercepted and a steal and turnover is logged
@@ -381,6 +424,8 @@ public class Game {
         clock = 25;
         team = 1 - team;
         handler = (int)(Math.random() * 5);
+        if (Math.random() < 0.5 && handler != 0)
+          handler = (int)(Math.random() * 5);
         assist = null;
       }
     }

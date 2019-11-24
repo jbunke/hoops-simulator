@@ -10,7 +10,6 @@ public class Main {
   private static final boolean online = false;
 
   public static void main(String[] args) {
-    NBATeams.WAS(online);
     List<Team> pacificTeams = new ArrayList<>();
     pacificTeams.add(NBATeams.GSW(online));
     pacificTeams.add(NBATeams.LAC(online));
@@ -66,8 +65,8 @@ public class Main {
     Conference eastern = new Conference("Eastern",
             List.of(atlantic, central, southeast));
 
-    League NBA = new League("National Basketball Association", 2019,
-            western, eastern, 82);
+    League NBA = new League("National Basketball Association", 2020,
+            western, eastern, 215);
     NBA.printTeamsQuality();
     NBA.printLeaders(StatComparator.Stat.OVR, Player::overall, "Ratings");
     // NBA.simulateRegularSeason();

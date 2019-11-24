@@ -235,11 +235,11 @@ public class StatCalculator {
       }
       for (int i = 0; i < 4; i++) {
         // dump
-        scanner.nextLine();
+        if (scanner.hasNextLine()) scanner.nextLine();
       }
       // Headers
       StringBuilder header = new StringBuilder("");
-      for (int i = 0; i < 30 && scanner.hasNext(); i++) {
+      for (int i = 0; i < 30 && scanner.hasNextLine(); i++) {
         if (i != 0) {
           header.append(",");
         }
@@ -249,7 +249,7 @@ public class StatCalculator {
       }
       stats.add(header.toString());
       start = false;
-      while (!start && scanner.hasNext()) {
+      while (!start && scanner.hasNextLine()) {
         line = scanner.nextLine();
         if (line.contains("<tr")) {
           start = true;
