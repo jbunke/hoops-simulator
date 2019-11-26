@@ -33,6 +33,7 @@ public class Main {
     northwestTeams.add(NBATeams.POR(online));
     northwestTeams.add(NBATeams.MIN(online));
     northwestTeams.add(NBATeams.UTA(online));
+    // northwestTeams.add(NBATeams.YOUNG());
     Division northwest = new Division("Northwest", northwestTeams);
 
     Conference western = new Conference("Western",
@@ -44,6 +45,7 @@ public class Main {
     atlanticTeams.add(NBATeams.BOS(online));
     atlanticTeams.add(NBATeams.BRK(online));
     atlanticTeams.add(NBATeams.NYK(online));
+    // atlanticTeams.add(NBATeams.ESTABLISHED());
     Division atlantic = new Division("Atlantic", atlanticTeams);
 
     List<Team> centralTeams = new ArrayList<>();
@@ -66,7 +68,7 @@ public class Main {
             List.of(atlantic, central, southeast));
 
     League NBA = new League("National Basketball Association", 2020,
-            western, eastern, 215);
+            western, eastern, 82);
     NBA.printTeamsQuality();
     NBA.printLeaders(StatComparator.Stat.OVR, Player::overall, "Ratings");
     // NBA.simulateRegularSeason();

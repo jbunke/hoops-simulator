@@ -8,6 +8,7 @@ public class PositionComparator implements Comparator<Player> {
 
   @Override
   public int compare(Player a, Player b) {
-    return Player.overall(b, b.position()) - Player.overall(a, a.position());
+    return (Player.overall(b, b.position()) + (b.getEnergy() / 30)) -
+            (Player.overall(a, a.position()) + (a.getEnergy() / 30));
   }
 }

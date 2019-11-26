@@ -5,8 +5,8 @@ import hoops_root.Player;
 public enum Position {
   POINT_GUARD(0),
   SHOOTING_GUARD(1),
-  POWER_FORWARD(2),
-  SMALL_FORWARD(3),
+  SMALL_FORWARD(2),
+  POWER_FORWARD(3),
   CENTER(4);
 
   public final int index;
@@ -24,9 +24,9 @@ public enum Position {
       case 1:
         return SHOOTING_GUARD;
       case 2:
-        return POWER_FORWARD;
-      case 3:
         return SMALL_FORWARD;
+      case 3:
+        return POWER_FORWARD;
       case 4:
       default:
         return CENTER;

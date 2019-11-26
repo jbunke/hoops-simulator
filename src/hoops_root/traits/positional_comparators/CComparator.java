@@ -9,7 +9,7 @@ public class CComparator implements Comparator<Player> {
 
   @Override
   public int compare(Player a, Player b) {
-    return Player.overall(b, Position.CENTER) -
-            Player.overall(a, Position.CENTER);
+    return (Player.overall(b, Position.CENTER) + (b.getEnergy() / 30)) -
+            (Player.overall(a, Position.CENTER) + (a.getEnergy() / 30));
   }
 }

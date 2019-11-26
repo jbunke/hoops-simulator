@@ -9,7 +9,7 @@ public class PGComparator implements Comparator<Player> {
 
   @Override
   public int compare(Player a, Player b) {
-    return Player.overall(b, Position.POINT_GUARD) -
-            Player.overall(a, Position.POINT_GUARD);
+    return (Player.overall(b, Position.POINT_GUARD) + (b.getEnergy() / 30)) -
+            (Player.overall(a, Position.POINT_GUARD) + (a.getEnergy() / 30));
   }
 }

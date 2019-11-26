@@ -245,6 +245,42 @@ public class NBATeams {
     return new Team("GUA", "NBA Guards", roster);
   }
 
+  public static Team YOUNG() {
+    Player[] roster = new Player[] {
+            NBAPlayers.getPlayer("Luka Dončić", false, false),
+            NBAPlayers.getPlayer("Trae Young", false, false),
+            NBAPlayers.getPlayer("Giannis Antetokounmpo", false, false),
+            NBAPlayers.getPlayer("Nikola Jokić", false, false),
+            NBAPlayers.getPlayer("D'Angelo Russell", false, false),
+            NBAPlayers.getPlayer("Karl-Anthony Towns", false, false),
+            NBAPlayers.getPlayer("De'Aaron Fox", false, false),
+            NBAPlayers.getPlayer("Devin Booker", false, false),
+            NBAPlayers.getPlayer("Joel Embiid", false, false),
+            NBAPlayers.getPlayer("Zach LaVine", false, false),
+            NBAPlayers.getPlayer("Donovan Mitchell", false, false),
+            NBAPlayers.getPlayer("Bradley Beal", false, false)
+    };
+    return new Team("LDN", "London Kings", roster);
+  }
+
+  public static Team ESTABLISHED() {
+    Player[] roster = new Player[] {
+            NBAPlayers.getPlayer("Damian Lillard", false, false),
+            NBAPlayers.getPlayer("James Harden", false, false),
+            NBAPlayers.getPlayer("Kyrie Irving", false, false),
+            NBAPlayers.getPlayer("Stephen Curry", false, false),
+            NBAPlayers.getPlayer("LeBron James", false, false),
+            NBAPlayers.getPlayer("Anthony Davis", false, false),
+            NBAPlayers.getPlayer("Kawhi Leonard", false, false),
+            NBAPlayers.getPlayer("Paul George", false, false),
+            NBAPlayers.getPlayer("Pascal Siakam", false, false),
+            NBAPlayers.getPlayer("Russell Westbrook", false, false),
+            NBAPlayers.getPlayer("Kevin Durant", false, false),
+            NBAPlayers.getPlayer("Kemba Walker", false, false)
+    };
+    return new Team("MAN", "Manchester Knights", roster);
+  }
+
   public static Team FORWARDS() {
     // s, r, a, p, v, c, f, b, d
     Player[] roster = new Player[12];

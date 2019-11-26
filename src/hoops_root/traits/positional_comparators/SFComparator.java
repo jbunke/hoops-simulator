@@ -9,7 +9,7 @@ public class SFComparator implements Comparator<Player> {
 
   @Override
   public int compare(Player a, Player b) {
-    return Player.overall(b, Position.SMALL_FORWARD) -
-            Player.overall(a, Position.SMALL_FORWARD);
+    return (Player.overall(b, Position.SMALL_FORWARD) + (b.getEnergy() / 30)) -
+            (Player.overall(a, Position.SMALL_FORWARD) + (a.getEnergy() / 30));
   }
 }

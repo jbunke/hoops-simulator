@@ -278,16 +278,20 @@ public class Player {
 
   public int overall() { return overall; }
 
+  public int getEnergy() {
+    return energy;
+  }
+
   public static int overall(Player player, Position position) {
     int[] weight = new int[10];
 
     switch (position) {
       case POINT_GUARD:
-        weight[SHOOTING] = 4;
+        weight[SHOOTING] = 5;
         weight[REBOUNDING] = 2;
         weight[ATHLETICISM] = 2;
         weight[PASSING] = 6;
-        weight[EFFICIENCY] = 5;
+        weight[EFFICIENCY] = 4;
         weight[CLUTCH] = 3;
         weight[FREE_THROW] = 2;
         weight[DEFENSE] = 2;
@@ -296,15 +300,15 @@ public class Player {
         break;
       case SHOOTING_GUARD:
         weight[SHOOTING] = 6;
-        weight[REBOUNDING] = 3;
+        weight[REBOUNDING] = 2;
         weight[ATHLETICISM] = 2;
-        weight[PASSING] = 4;
-        weight[EFFICIENCY] = 3;
-        weight[CLUTCH] = 3;
+        weight[PASSING] = 3;
+        weight[EFFICIENCY] = 5;
+        weight[CLUTCH] = 4;
         weight[FREE_THROW] = 2;
-        weight[DEFENSE] = 4;
-        weight[SCORING] = 3;
-        weight[TOTAL] = 30;
+        weight[DEFENSE] = 3;
+        weight[SCORING] = 5;
+        weight[TOTAL] = 32;
         break;
       case POWER_FORWARD:
         weight[SHOOTING] = 2;
@@ -319,8 +323,8 @@ public class Player {
         weight[TOTAL] = 30;
         break;
       case SMALL_FORWARD:
-        weight[SHOOTING] = 3;
-        weight[REBOUNDING] = 4;
+        weight[SHOOTING] = 4;
+        weight[REBOUNDING] = 3;
         weight[ATHLETICISM] = 3;
         weight[PASSING] = 3;
         weight[EFFICIENCY] = 3;
@@ -332,11 +336,11 @@ public class Player {
         break;
       case CENTER:
       default:
-        weight[SHOOTING] = 3;
+        weight[SHOOTING] = 2;
         weight[REBOUNDING] = 6;
         weight[ATHLETICISM] = 5;
         weight[PASSING] = 2;
-        weight[EFFICIENCY] = 2;
+        weight[EFFICIENCY] = 3;
         weight[CLUTCH] = 3;
         weight[FREE_THROW] = 2;
         weight[DEFENSE] = 5;
@@ -347,10 +351,10 @@ public class Player {
 
     int statSum = 0;
     for (int i = 0; i < 9; i++) {
-      weight[i] += 3;
+      // weight[i] += 3;
       statSum += (player.stats[i] * weight[i]);
     }
-    weight[TOTAL] += (9 * 3);
+    // weight[TOTAL] += (9 * 3);
     return Math.min(99, (statSum / weight[TOTAL]) + 5);
   }
 
@@ -366,7 +370,7 @@ public class Player {
   }
 
   void replenishEnergy() {
-    energy += stats[2];
+    energy += stats[2] / 2;
     energy = Math.min(energy, 1000);
     if (energy > 600 && status == Status.FATIGUED) {
       setStatus(Status.FIT);

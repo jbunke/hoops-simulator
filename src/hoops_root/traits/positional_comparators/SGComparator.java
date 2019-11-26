@@ -9,7 +9,7 @@ public class SGComparator implements Comparator<Player> {
 
   @Override
   public int compare(Player a, Player b) {
-    return Player.overall(b, Position.SHOOTING_GUARD) -
-            Player.overall(a, Position.SHOOTING_GUARD);
+    return (Player.overall(b, Position.SHOOTING_GUARD) + (b.getEnergy() / 30)) -
+            (Player.overall(a, Position.SHOOTING_GUARD) + (a.getEnergy() / 30));
   }
 }

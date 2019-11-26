@@ -221,15 +221,15 @@ public class Game {
     Player defender = getPlayer(opps, (int)(Math.random() * 5));
 
     // dunk is made if player is better dunker than defender is blocker or if player is more athletic
-    boolean make = (player.height + player.getStats()[SCORING] + (20 * Math.random()) >
-            defender.height + defender.getStats()[DEFENSE] + (20 * Math.random()) ||
-            player.height + player.getStats()[ATHLETICISM] + (20 * Math.random()) >
-                    defender.height + defender.getStats()[ATHLETICISM] + (20 * Math.random()));
+    boolean make = (player.height * 2 + player.getStats()[SCORING] + (40 * Math.random()) >
+            defender.height * 2 + defender.getStats()[DEFENSE] + (20 * Math.random()) ||
+            player.height * 2 + player.getStats()[ATHLETICISM] + (40 * Math.random()) >
+                    defender.height * 2 + defender.getStats()[ATHLETICISM] + (20 * Math.random()));
     if (clutch) {
-      make = (player.height + player.getStats()[SCORING] + (20 * Math.random()) >
-              defender.height + defender.getStats()[DEFENSE] + (20 * Math.random()) ||
-              player.height + player.getStats()[ATHLETICISM] + (20 * Math.random()) >
-                      defender.height + defender.getStats()[ATHLETICISM] + (20 * Math.random()) ||
+      make = (player.height * 2 + player.getStats()[SCORING] + (40 * Math.random()) >
+              defender.height * 2 + defender.getStats()[DEFENSE] + (20 * Math.random()) ||
+              player.height * 2 + player.getStats()[ATHLETICISM] + (40 * Math.random()) >
+                      defender.height * 2 + defender.getStats()[ATHLETICISM] + (20 * Math.random()) ||
               player.getStats()[CLUTCH] > defender.getStats()[CLUTCH]);
     }
     if (make) {
@@ -272,7 +272,7 @@ public class Game {
 
     // pass can be intercepted
     double defOdds = defender.getStats()[DEFENSE] + (20 * Math.random());
-    double offOdds = player.getStats()[PASSING] + (Math.sqrt(Math.random() * 2e4));
+    double offOdds = player.getStats()[PASSING] + (Math.sqrt(Math.random() * 1e4));
 
     boolean make = offOdds > defOdds;
 
@@ -340,8 +340,8 @@ public class Game {
       // a play
       boolean clutch = seconds < 120 && scoreBySegment.size() >= 4;
       Player hasBall = getPlayer(team, handler);
-      int time = 4 + (int)(5 * Math.random());
-      if (clock <= time) {
+      int time = 4 + (int)(6 * Math.random());
+      if (clock <= time || seconds <= time) {
         if (hasBall.getStats()[SCORING] > hasBall.getStats()[SHOOTING] &&
                 Math.random() < .7) {
           switchPos = drive(hasBall, team, assist, clutch);
